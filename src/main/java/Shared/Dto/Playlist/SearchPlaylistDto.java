@@ -1,0 +1,13 @@
+package Shared.Dto.Playlist;
+
+public class SearchPlaylistDto {
+    private String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+}
