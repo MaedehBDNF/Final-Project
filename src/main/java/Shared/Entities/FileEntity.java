@@ -1,4 +1,4 @@
-package Server.FileManager;
+package Shared.Entities;
 
 public class FileEntity {
     private int id;

@@ -1,10 +1,10 @@
 package Shared.Dto.Search;
 
-import Server.Album.AlbumEntity;
-import Server.Artist.ArtistEntity;
-import Server.Music.MusicEntity;
-import Server.Playlist.PlaylistEntity;
-import Server.User.UserEntity;
+import Shared.Entities.AlbumEntity;
+import Shared.Entities.ArtistEntity;
+import Shared.Entities.MusicEntity;
+import Shared.Entities.PlaylistEntity;
+import Shared.Entities.UserEntity;
 
 import java.util.ArrayList;
 

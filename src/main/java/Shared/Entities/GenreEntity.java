@@ -1,4 +1,4 @@
-package Server.Genre;
+package Shared.Entities;
 
 public class GenreEntity {
     private int id;
@@ -27,5 +27,14 @@ public class GenreEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "GenreEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

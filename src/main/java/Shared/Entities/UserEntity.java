@@ -1,10 +1,6 @@
-package Server.User;
+package Shared.Entities;
 
-import Server.Album.AlbumEntity;
-import Server.Artist.ArtistEntity;
-import Server.Playlist.PlaylistEntity;
 import Shared.Dto.File.FileDto;
-
 import java.util.ArrayList;
 
 public class UserEntity {
@@ -58,6 +54,7 @@ public class UserEntity {
         this.profilePicture = profilePicture;
     }
 
+
     public ArrayList<UserEntity> getFriends() {
         return friends;
     }
@@ -88,5 +85,20 @@ public class UserEntity {
 
     public void setAlbums(ArrayList<AlbumEntity> albums) {
         this.albums = albums;
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", profilePicture=" + profilePicture +
+                ", friends=" + friends +
+                ", followings=" + followings +
+                ", playlists=" + playlists +
+                ", albums=" + albums +
+                '}';
     }
 }
