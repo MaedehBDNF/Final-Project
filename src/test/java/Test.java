@@ -18,6 +18,7 @@ import Shared.Dto.User.FollowUserDto;
 import Shared.Dto.User.LoginDto;
 import Shared.Dto.User.RegisterDto;
 import Shared.Entities.*;
+import Shared.Enums.Status;
 import Shared.Enums.Title;
 import Shared.Enums.UploadType;
 import Shared.Request;
@@ -155,7 +156,9 @@ public class Test {
         request.setData(registerDto);
         sendReqToServer(request);
         Response response = getResFromServer();
-        currentUserID = objectMapper.convertValue(response.getData(), UserEntity.class).getId();
+        if (response.getStatus().equals(Status.successful)) {
+            currentUserID = objectMapper.convertValue(response.getData(), UserEntity.class).getId();
+        }
     }
 
     private static void login(String username, String password) {
@@ -167,7 +170,9 @@ public class Test {
         request.setData(loginDto);
         sendReqToServer(request);
         Response rs = getResFromServer();
-        currentUserID = objectMapper.convertValue(rs.getData(), UserEntity.class).getId();
+        if (rs.getStatus().equals(Status.successful)) {
+            currentUserID = objectMapper.convertValue(rs.getData(), UserEntity.class).getId();
+        }
     }
 
     private static void uploadProfilePicture() {
