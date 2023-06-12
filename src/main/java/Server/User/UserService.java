@@ -1,7 +1,10 @@
 package Server.User;
 
+import Shared.Entities.AlbumEntity;
 import Server.Config.DatabaseConfigDto;
+import Server.Playlist.PlaylistService;
 import Shared.Dto.User.*;
+import Shared.Entities.UserEntity;
 import Shared.Enums.Error;
 import Shared.Enums.Title;
 import Shared.Response;
@@ -10,28 +13,34 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.ArrayList;
 
 public class UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PlaylistService playlistService;
     public UserService(DatabaseConfigDto config){
         this.userRepository = new UserRepository(config);
+        this.playlistService = new PlaylistService(config);
     }
 
     public Response register(RegisterDto registerDto){
         UserEntity userEntity = new UserEntity();
         Response response = new Response();
         response.setTitle(Title.register);
-
+        // check existence
         if (this.findByUsername(registerDto.getUsername()).getId() != 0){
-            response.setError(Error.duplicateUsername);
+            response.setError(Error.duplicateDataError);
             return response;
         }
-
+        // add to user table if exist
         userEntity.setUsername(registerDto.getUsername());
         userEntity.setPassword(BCrypt.hashpw(registerDto.getPassword(), BCrypt.gensalt()));
         userEntity.setEmail(registerDto.getEmail());
-        if (this.userRepository.insertIntoTable(userEntity).getId() == 0) {
+        int userId = this.userRepository.insertIntoTable(userEntity).getId();
+        if (userId == 0) {
             response.setError(Error.databaseError);
             return response;
         }
+        // add liked music playlist ID to table
+        this.playlistService.createLikedMusicPlaylist(userId);
+
         response.successful();
         userEntity.setPassword(null);
         response.setData(userEntity);
@@ -71,6 +80,22 @@ public class UserService {
         return this.userRepository.followArtist(userId, artistId);
     }
 
+    public Response getUserFollowings(int userId) {
+        Response response = new Response();
+        response.setTitle(Title.getUserFollowings);
+        response.setData(this.userRepository.getUserFollowings(userId));
+        response.successful();
+        return response;
+    }
+
+    public Response getUserFriends(int userId) {
+        Response response = new Response();
+        response.setTitle(Title.getUserFriends);
+        response.setData(this.userRepository.getUserFriends(userId));
+        response.successful();
+        return response;
+    }
+
     public UserEntity findByUsername(String username){
         return this.userRepository.findByUsername(username);
     }
@@ -96,11 +121,16 @@ public class UserService {
         return response;
     }
 
+    public ArrayList<AlbumEntity> findUserLikedAlbums(int userId) {
+        return this.userRepository.findUserLikedAlbums(userId);
+    }
+
     public ArrayList<UserEntity> searchUser(String username) {
         return this.userRepository.searchUser(username);
     }
 
     public void close(){
         this.userRepository.close();
+        this.playlistService.close();
     }
 }
