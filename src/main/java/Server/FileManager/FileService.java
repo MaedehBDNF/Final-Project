@@ -2,6 +2,7 @@ package Server.FileManager;
 
 import Server.Config.DatabaseConfigDto;
 import Shared.Dto.File.*;
+import Shared.Entities.FileEntity;
 import Shared.Enums.Error;
 import Shared.Enums.Title;
 import Shared.Response;

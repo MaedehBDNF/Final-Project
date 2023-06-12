@@ -1,6 +1,7 @@
 package Server.FileManager;
 
 import Server.Config.DatabaseConfigDto;
+import Shared.Entities.FileEntity;
 
 import java.sql.*;
 
@@ -38,9 +39,9 @@ public class FileRepository {
             insertStatement.execute();
             ResultSet rs = insertStatement.getResultSet();
             rs.next();
-            int id = rs.getInt(1);
-            return id;
+            return rs.getInt(1);
         } catch (SQLException e) {
+            e.printStackTrace();
             throw e;
         }
     }
