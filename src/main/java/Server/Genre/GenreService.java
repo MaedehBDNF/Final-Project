@@ -1,6 +1,7 @@
 package Server.Genre;
 
 import Server.Config.DatabaseConfigDto;
+import Shared.Entities.GenreEntity;
 import Shared.Enums.Error;
 import Shared.Enums.Title;
 import Shared.Response;

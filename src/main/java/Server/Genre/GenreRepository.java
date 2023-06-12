@@ -1,6 +1,7 @@
 package Server.Genre;
 
 import Server.Config.DatabaseConfigDto;
+import Shared.Entities.GenreEntity;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -48,7 +49,7 @@ public class GenreRepository {
 
     public GenreEntity findOne(int id){
         GenreEntity genre = new GenreEntity();
-        String query = "SELECT * From \"genre\" WHERE id = ?";
+        String query = "SELECT * From \"genre\" WHERE id = ?;";
         try {
             PreparedStatement selectStatement = this.connection.prepareStatement(query);
             selectStatement.setInt(1, id);
@@ -66,13 +67,17 @@ public class GenreRepository {
 
     public ArrayList<GenreEntity> findAll(){
         ArrayList<GenreEntity> genres = new ArrayList<>();
-        String query = "SELECT * From \"file\"";
+        ArrayList<Integer> genreIds = new ArrayList<>();
+        String query = "SELECT * From \"genre\";";
         try {
             PreparedStatement selectStatement = this.connection.prepareStatement(query);
             ResultSet rs = selectStatement.executeQuery();
             while (rs.next()){
+                int genreId = rs.getInt("id");
+                if (genreIds.contains(genreId)) continue;
+                genreIds.add(genreId);
                 GenreEntity genre = new GenreEntity();
-                genre.setId(rs.getInt("id"));
+                genre.setId(genreId);
                 genre.setName(rs.getString("name"));
                 genre.setDescription(rs.getString("description"));
                 genres.add(genre);
