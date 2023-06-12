@@ -1,6 +1,6 @@
-package Shared.Dto.User;
+package Shared.Dto.Music;
 
-public class FindOneUserDto {
+public class DislikeMusicDto {
     private int id;
 
     public int getId() {

@@ -1,9 +1,8 @@
 package Shared.Dto.Playlist;
 
-public class AddMusicToPlaylistDto {
+public class RemoveMusicFromPlaylistDto {
     private int id;
     private int musicId;
-
 
     public int getId() {
         return id;

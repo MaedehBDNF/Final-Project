@@ -1,16 +1,15 @@
 package Shared.Dto.Playlist;
 
-public class ChangeMusicOrderInPlaylistDto {
+public class UpdateMusicTurnDto {
     private int id;
     private int musicId;
-    private double order;
+    private double turn;
 
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
-
         this.id = id;
     }
 
@@ -19,15 +18,14 @@ public class ChangeMusicOrderInPlaylistDto {
     }
 
     public void setMusicId(int musicId) {
-
         this.musicId = musicId;
     }
 
-    public double getOrder() {
-        return order;
+    public double getTurn() {
+        return turn;
     }
 
-    public void setOrder(double order) {
-        this.order = order;
+    public void setTurn(double turn) {
+        this.turn = turn;
     }
 }
