@@ -9,6 +9,9 @@ public enum Title {
     searchUser,
     followUser,
     followArtist,
+    findUserLikedAlbums,
+    getUserFriends,
+    getUserFollowings,
     // File
     upload,
     getFileInfo,
@@ -19,24 +22,27 @@ public enum Title {
     // Artist
     findOneArtist,
     searchArtist,
+    findArtistAlbums,
     // Album
     findOneAlbum,
-    findAllAlbums,
+    findAlbumSongs,
     searchAlbum,
     likeAlbum,
     // Music
     findOneMusic,
     searchMusic,
     likeMusic,
+    dislikeMusic,
     addCommentOnMusic,
     // Playlist
     createPlaylist,
     findOnePlaylist,
-    findAllPlaylists,
+    findAllUserPlaylists,
     searchPlaylist,
     likePlayList,
-    addPlaylist, // user can add a public playlist to his playlists
+    addPlaylist,
     addMusicToPlaylist,
+    removeMusicFromPlaylist,
     changeMusicOrderInPlaylist,
     // All
     completeSearch,
