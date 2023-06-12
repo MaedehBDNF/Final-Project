@@ -3,6 +3,8 @@ package Server.Manager;
 import Server.Album.AlbumService;
 import Server.Artist.ArtistService;
 import Server.Config.DatabaseConfigDto;
+import Shared.Dto.Music.DislikeMusicDto;
+import Shared.Entities.FileEntity;
 import Server.FileManager.FileService;
 import Server.Genre.GenreService;
 import Shared.Entities.CommentEntity;
@@ -13,11 +15,14 @@ import Shared.Entities.UserEntity;
 import Server.User.UserService;
 import Shared.Cryptography.AESEncryption;
 import Shared.Cryptography.RSAEncryption;
+import Shared.Dto.Album.FindOneAlbumDto;
+import Shared.Dto.Album.LikeAlbumDto;
+import Shared.Dto.Artist.FindOneArtistDto;
 import Shared.Dto.File.*;
 import Shared.Dto.Genre.FindOneGenreDto;
 import Shared.Dto.Music.FindOneMusicDto;
 import Shared.Dto.Music.LikeMusicDto;
-import Shared.Dto.Music.SearchMusicDto;
+import Shared.Dto.Playlist.*;
 import Shared.Dto.Search.SearchRequestDto;
 import Shared.Dto.Search.SearchResponseDto;
 import Shared.Dto.User.*;
@@ -28,33 +33,34 @@ import Shared.Request;
 import Shared.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import java.io.*;
 import java.net.Socket;
 
 public class Manager implements Runnable {
     private int currentUserId = -1;
-    private Socket socket;
+    private final Socket socket;
     private InputStream inputStream;
     private DataInputStream dataInputStream;
     private OutputStream outputStream;
     private DataOutputStream dataOutputStream;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private boolean doesExit = false;
     private boolean needResponse = true;
 
-    private UserService userService;
-    private AlbumService albumService;
-    private ArtistService artistService;
-    private PlaylistService playlistService;
-    private MusicService musicService;
-    private GenreService genreService;
-    private FileService fileService;
+    private final UserService userService;
+    private final AlbumService albumService;
+    private final ArtistService artistService;
+    private final PlaylistService playlistService;
+    private final MusicService musicService;
+    private final GenreService genreService;
+    private final FileService fileService;
 
-    private RSAEncryption encryptor;
+    private final RSAEncryption encryptor;
     private String AES_SECRET = "";
     private AESEncryption aesEncryption;
+
+    private int maximumRequestWithoutLogin = 5;
 
     public Manager(Socket socket, DatabaseConfigDto config) {
         this.userService = new UserService(config);
@@ -165,17 +171,29 @@ public class Manager implements Runnable {
                 LoginDto loginDto = this.mapper.convertValue(request.getData(), LoginDto.class);
                 return this.login(loginDto);
             case findOneUser:
-                FindOneUserDto findOneUserDto = this.mapper.convertValue(request.getData(), FindOneUserDto.class);
-                return this.userService.findOne(findOneUserDto.getId());
+                if (request.getUserId() != this.currentUserId) break;
+                return this.userService.findOne(request.getUserId());
             case searchUser:
+                if (request.getUserId() != this.currentUserId) break;
                 SearchUserDto searchUserDto = this.mapper.convertValue(request.getData(), SearchUserDto.class);
                 return this.searchUser(searchUserDto.getUsername());
             case followUser:
+                if (request.getUserId() != this.currentUserId) break;
                 FollowUserDto followUserDto = this.mapper.convertValue(request.getData(), FollowUserDto.class);
                 return this.followUser(request.getUserId(), followUserDto);
+            case findUserLikedAlbums:
+                if (request.getUserId() != this.currentUserId) break;
+                return this.findUserLikedAlbums(request.getUserId());
+            case getUserFriends:
+                if (request.getUserId() != this.currentUserId) break;
+                return this.userService.getUserFriends(request.getUserId());
             case followArtist:
+                if (request.getUserId() != this.currentUserId) break;
                 FollowArtistDto followArtistDto = this.mapper.convertValue(request.getData(), FollowArtistDto.class);
                 return this.followArtist(request.getUserId(), followArtistDto);
+            case getUserFollowings:
+                if (request.getUserId() != this.currentUserId) break;
+                return this.userService.getUserFollowings(request.getUserId());
             case logOut:
                 if (request.getUserId() != this.currentUserId) break;
                 return this.logout();
@@ -186,11 +204,15 @@ public class Manager implements Runnable {
                 UploadDto uploadDto = this.mapper.convertValue(request.getData(), UploadDto.class);
                 return this.uploadFile(uploadDto);
             case getFileInfo:
-                if (request.getUserId() != this.currentUserId) break;
                 downloadDto = this.mapper.convertValue(request.getData(), DownloadDto.class);
                 return this.fileService.getFileInfo(downloadDto);
             case download:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1) {
+                    if (this.maximumRequestWithoutLogin == 0) break;
+                    this.maximumRequestWithoutLogin--;
+                } else {
+                    if (request.getUserId() != this.currentUserId) break;
+                }
                 downloadDto = this.mapper.convertValue(request.getData(), DownloadDto.class);
                 this.fileService.download(downloadDto);
                 this.needResponse = false;
@@ -198,36 +220,94 @@ public class Manager implements Runnable {
 
             // Genre Manager
             case findOneGenre:
-                if (request.getUserId() != this.currentUserId) break;
                 FindOneGenreDto findOneGenreDto = this.mapper.convertValue(request.getData(), FindOneGenreDto.class);
                 return this.genreService.findOneGenre(findOneGenreDto.getId());
             case findAllGenres:
-                if (request.getUserId() != this.currentUserId) break;
                 return this.genreService.findAll();
+
+            // Album Manager
+            case findOneAlbum:
+                FindOneAlbumDto findOneAlbumDto = this.mapper.convertValue(request.getData(), FindOneAlbumDto.class);
+                return this.albumService.findOne(findOneAlbumDto.getId());
+            case findAlbumSongs:
+                FindOneAlbumDto findOneAlbumSongs = this.mapper.convertValue(request.getData(), FindOneAlbumDto.class);
+                return this.findAlbumSongs(findOneAlbumSongs.getId());
+            case searchAlbum:
+                SearchRequestDto searchAlbumDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
+                return this.searchAlbum(searchAlbumDto.getValue());
+            case likeAlbum:
+                if (request.getUserId() != this.currentUserId) break;
+                LikeAlbumDto likeAlbumDto = this.mapper.convertValue(request.getData(), LikeAlbumDto.class);
+                return this.likeAlbum(likeAlbumDto);
+
+            // Artist Manager
+            case findOneArtist:
+                FindOneArtistDto findOneArtistDto = this.mapper.convertValue(request.getData(), FindOneArtistDto.class);
+                return this.artistService.findOne(findOneArtistDto.getId());
+            case findArtistAlbums:
+                FindOneArtistDto findOneArtistAlbums = this.mapper.convertValue(request.getData(), FindOneArtistDto.class);
+                return this.artistService.findArtistAlbums(findOneArtistAlbums.getId());
+            case searchArtist:
+                SearchRequestDto searchArtistDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
+                return this.searchArtist(searchArtistDto.getValue());
 
             // Music Manager
             case findOneMusic:
-                if (request.getUserId() != this.currentUserId) break;
                 FindOneMusicDto findOneMusicDto = this.mapper.convertValue(request.getData(), FindOneMusicDto.class);
                 return this.musicService.findOne(findOneMusicDto.getId());
             case likeMusic:
                 if (request.getUserId() != this.currentUserId) break;
                 LikeMusicDto likeMusicDto = this.mapper.convertValue(request.getData(), LikeMusicDto.class);
                 return this.likeMusic(request.getUserId(), likeMusicDto.getId());
+            case dislikeMusic:
+                if (request.getUserId() != this.currentUserId) break;
+                DislikeMusicDto dislikeMusicDto = this.mapper.convertValue(request.getData(), DislikeMusicDto.class);
+                return this.dislikeMusic(request.getUserId(), dislikeMusicDto.getId());
             case addCommentOnMusic:
                 if (request.getUserId() != this.currentUserId) break;
                 CommentEntity comment = this.mapper.convertValue(request.getData(), CommentEntity.class);
-                this.musicService.addComment(comment);
-                this.needResponse = false;
-                break;
+                return this.musicService.addComment(comment);
             case searchMusic:
-                if (request.getUserId() != this.currentUserId) break;
-                SearchMusicDto searchMusicDto = this.mapper.convertValue(request.getData(), SearchMusicDto.class);
+                SearchRequestDto searchMusicDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
                 return this.searchMusic(searchMusicDto.getValue());
+
+            // Playlist Manager
+            case createPlaylist:
+                if (request.getUserId() != this.currentUserId) break;
+                CreatePlaylistDto createPlaylistDto = this.mapper.convertValue(request.getData(), CreatePlaylistDto.class);
+                return this.createPlaylist(createPlaylistDto);
+            case findOnePlaylist:
+                FindOnePlaylistDto findOnePlaylistDto = this.mapper.convertValue(request.getData(), FindOnePlaylistDto.class);
+                return this.playlistService.findOne(currentUserId, findOnePlaylistDto.getId());
+            case findAllUserPlaylists:
+                if (request.getUserId() != this.currentUserId) break;
+                return this.findAllUserPlaylist();
+            case searchPlaylist:
+                SearchRequestDto searchPlaylistDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
+                return this.searchPlaylist(searchPlaylistDto.getValue());
+            case likePlayList:
+                if (request.getUserId() != this.currentUserId) break;
+                LikePlaylistDto likePlaylistDto = this.mapper.convertValue(request.getData(), LikePlaylistDto.class);
+                return this.likePlaylist(likePlaylistDto);
+            case addPlaylist:
+                if (request.getUserId() != this.currentUserId) break;
+                AddPlaylistDto addPlaylistDto = this.mapper.convertValue(request.getData(), AddPlaylistDto.class);
+                return this.playlistService.addToUserPlaylists(addPlaylistDto);
+            case addMusicToPlaylist:
+                if (request.getUserId() != this.currentUserId) break;
+                AddMusicToPlaylistDto addMusicToPlaylistDto = this.mapper.convertValue(request.getData(), AddMusicToPlaylistDto.class);
+                return this.addMusicToPlaylist(addMusicToPlaylistDto);
+            case removeMusicFromPlaylist:
+                if (request.getUserId() != this.currentUserId) break;
+                RemoveMusicFromPlaylistDto removeMusicDto = this.mapper.convertValue(request.getData(), RemoveMusicFromPlaylistDto.class);
+                return this.removeMusicFromPlaylist(removeMusicDto);
+            case changeMusicOrderInPlaylist:
+                if (request.getUserId() != this.currentUserId) break;
+                UpdateMusicTurnDto updateMusicTurnDto = this.mapper.convertValue(request.getData(), UpdateMusicTurnDto.class);
+                return this.changeMusicOrderInPlaylist(updateMusicTurnDto);
 
             // All
             case completeSearch:
-                if (request.getUserId() != this.currentUserId) break;
                 SearchRequestDto searchDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
                 return this.search(searchDto.getValue());
 
@@ -246,6 +326,7 @@ public class Manager implements Runnable {
     private Response register(RegisterDto registerDto){
         Response response = this.userService.register(registerDto);
         if (response.getStatus().equals(Status.successful)){
+            this.maximumRequestWithoutLogin = 5;
             this.currentUserId = ((UserEntity) response.getData()).getId();
         }
         return response;
@@ -254,6 +335,7 @@ public class Manager implements Runnable {
     private Response login(LoginDto loginDto) {
         Response response = this.userService.login(loginDto);
         if (response.getStatus().equals(Status.successful)){
+            this.maximumRequestWithoutLogin = 5;
             this.currentUserId = ((UserEntity) response.getData()).getId();
         }
         return response;
@@ -273,21 +355,27 @@ public class Manager implements Runnable {
             response.setError(Error.notFound);
             return response;
         }
-        this.userService.followUser(userId, dto.getFriendId());
+        if (!this.userService.followUser(userId, dto.getFriendId())) {
+            response.setError(Error.databaseError);
+            return response;
+        }
         response.successful();
         return response;
     }
 
     private Response followArtist(int userId, FollowArtistDto dto) {
         Response response = new Response();
-        response.setTitle(Title.followUser);
-//        if (this.userService.findOneEntity(userId).getId() == 0 ||
-//                this.artistService.findOneEntity(dto.getArtistId()).getId() == 0
-//        ) {
-//            response.setError(Error.notFound);
-//            return response;
-//        }
-        this.userService.followArtist(userId, dto.getArtistId());
+        response.setTitle(Title.followArtist);
+        if (this.userService.findOneEntity(userId).getId() == 0 ||
+                this.artistService.findOneEntity(dto.getArtistId()).getId() == 0
+        ) {
+            response.setError(Error.notFound);
+            return response;
+        }
+        if (!this.userService.followArtist(userId, dto.getArtistId())) {
+            response.setError(Error.databaseError);
+            return response;
+        }
         response.successful();
         return response;
     }
@@ -308,16 +396,16 @@ public class Manager implements Runnable {
                 }
                 return response;
             case playlistCover:
-//                if (this.playlistService.findOneEntity(uploadDto.referenceId).getId() == 0) {
-//                    response.setError(Error.notFound);
-//                    return response;
-//                }
+                if (this.playlistService.findOneEntity(uploadDto.getReferenceId()).getId() == 0) {
+                    response.setError(Error.notFound);
+                    return response;
+                }
                 response = this.fileService.uploadFile(uploadDto);
                 if (response.getStatus() == Status.failed) return response;
-//                if (!this.playlistService.updatePlayerCover(uploadDto.referenceId, ((FileEntity) response.getData()).getId())) {
-//                    response.setStatus(Status.failed);
-//                    response.setData(null);
-//                }
+                if (!this.playlistService.updatePlayerCover(uploadDto.getReferenceId(), ((FileEntity) response.getData()).getId())) {
+                    response.setStatus(Status.failed);
+                    response.setData(null);
+                }
                 return response;
             default:
                 response.setError(Error.badRequest);
@@ -341,14 +429,83 @@ public class Manager implements Runnable {
         return response;
     }
 
+    private Response searchAlbum(String value) {
+        Response response = new Response();
+        response.setTitle(Title.searchAlbum);
+        response.setData(this.albumService.search(value));
+        response.successful();
+        return response;
+    }
+
+    private Response searchArtist(String str){
+        Response response = new Response();
+        response.setTitle(Title.searchArtist);
+        response.setData(this.artistService.search(str));
+        response.successful();
+        return response;
+    }
+
+    private Response searchPlaylist(String str){
+        Response response = new Response();
+        response.setTitle(Title.searchPlaylist);
+        response.setData(this.playlistService.search(str, this.currentUserId));
+        response.successful();
+        return response;
+    }
+
+    private Response createPlaylist(CreatePlaylistDto createPlaylistDto) {
+        Response response = new Response();
+        response.setTitle(Title.createPlaylist);
+        response.setData(this.playlistService.createNewPlaylist(createPlaylistDto));
+        response.successful();
+        return response;
+    }
+
+    private Response findUserLikedAlbums(int userId) {
+        Response response = new Response();
+        response.setTitle(Title.findUserLikedAlbums);
+        response.setData(this.userService.findUserLikedAlbums(userId));
+        response.successful();
+        return response;
+    }
+
+    private Response findAlbumSongs(int id){
+        Response response = new Response();
+        response.setTitle(Title.findAlbumSongs);
+        response.setData(this.albumService.findAlbumSongs(id));
+        response.successful();
+        return response;
+    }
+
+    private Response likeAlbum(LikeAlbumDto likeAlbumDto) {
+        Response response = new Response();
+        response.setTitle(Title.likeAlbum);
+        if (!this.albumService.likeAlbum(likeAlbumDto)){
+            response.setError(Error.databaseError);
+            return response;
+        }
+        response.successful();
+        return response;
+    }
+
+    private Response findAllUserPlaylist() {
+        Response response = new Response();
+        response.setTitle(Title.findAllUserPlaylists);
+        response.setData(this.playlistService.findAllUserPlaylists(currentUserId));
+        response.successful();
+        return response;
+    }
+
     private Response search(String value) {
         Response response = new Response();
         response.setTitle(Title.completeSearch);
         SearchResponseDto results = new SearchResponseDto();
-        results.setUsers(this.userService.searchUser(value));
-//        results.setMusics(this.artistService.search(value));
-//        results.setMusics(this.albumService.search(value));
-//        results.setMusics(this.playlistService.search(value));
+        if (this.currentUserId != -1) {
+            results.setUsers(this.userService.searchUser(value));
+        }
+        results.setArtists(this.artistService.search(value));
+        results.setAlbums(this.albumService.search(value));
+        results.setPlaylists(this.playlistService.search(value, this.currentUserId));
         results.setMusics(this.musicService.search(value));
         response.setData(results);
         response.successful();
@@ -358,10 +515,94 @@ public class Manager implements Runnable {
     private Response likeMusic(int userId, int musicId) {
         Response response = new Response();
         response.setTitle(Title.likeMusic);
-        this.musicService.likeMusic(musicId);
-//        PlaylistEntity likedSongPL = this.playlistService.addSongToLikedMusicPlaylist(userId, musicId);
-//        response.setData(likedSongPL);
+        AddMusicToPlaylistDto addDto = new AddMusicToPlaylistDto();
+        addDto.setId(this.playlistService.getLikedMusicsPlaylist(userId));
+        addDto.setMusicId(musicId);
+        PlaylistEntity likedSongPL = this.playlistService.addMusic(addDto, userId, true);
+        if (likedSongPL.getId() == 0) {
+            response.setError(Error.forbidden);
+            return response;
+        }
+        if (!this.musicService.likeMusic(musicId)){
+            response.setError(Error.databaseError);
+            return response;
+        }
+
+        response.setData(likedSongPL);
         response.successful();
         return response;
+    }
+
+    private Response dislikeMusic(int userId, int musicId) {
+        Response response = new Response();
+        response.setTitle(Title.dislikeMusic);
+        RemoveMusicFromPlaylistDto removeMusicDto = new RemoveMusicFromPlaylistDto();
+        removeMusicDto.setId(this.playlistService.getLikedMusicsPlaylist(userId));
+        if (removeMusicDto.getId() == -1) {
+            response.setError(Error.notFound);
+            return response;
+        }
+        removeMusicDto.setMusicId(musicId);
+        if(!this.playlistService.removeMusic(removeMusicDto, userId, true)) {
+            response.setError(Error.databaseError);
+            return response;
+        }
+        if (!this.musicService.dislikeMusic(musicId)){
+            response.setError(Error.databaseError);
+            return response;
+        }
+        response.successful();
+        return response;
+    }
+
+    private Response likePlaylist(LikePlaylistDto likePlaylistDto) {
+        Response response = new Response();
+        response.setTitle(Title.likePlayList);
+        AddPlaylistDto addPlaylistDto = new AddPlaylistDto();
+        addPlaylistDto.setId(likePlaylistDto.getId());
+        addPlaylistDto.setUserId(this.currentUserId);
+        if (this.playlistService.likePlaylist(addPlaylistDto)){
+            response.successful();
+            return response;
+        } else {
+            response.setError(Error.databaseError);
+            return response;
+        }
+    }
+
+    private Response addMusicToPlaylist(AddMusicToPlaylistDto addMusicToPlaylistDto) {
+        Response response = new Response();
+        response.setTitle(Title.addMusicToPlaylist);
+        if (this.playlistService.addMusic(addMusicToPlaylistDto, this.currentUserId, false).getId() != 0) {
+            response.successful();
+            return response;
+        } else {
+            response.setError(Error.forbidden);
+            return response;
+        }
+    }
+
+    private Response removeMusicFromPlaylist(RemoveMusicFromPlaylistDto removeMusicDto) {
+        Response response = new Response();
+        response.setTitle(Title.removeMusicFromPlaylist);
+        if (this.playlistService.removeMusic(removeMusicDto, this.currentUserId, false)) {
+            response.successful();
+            return response;
+        } else {
+            response.setError(Error.forbidden);
+            return response;
+        }
+    }
+
+    private Response changeMusicOrderInPlaylist(UpdateMusicTurnDto updateMusicTurnDto) {
+        Response response = new Response();
+        response.setTitle(Title.changeMusicOrderInPlaylist);
+        if (this.playlistService.updateMusicTurn(updateMusicTurnDto)) {
+            response.successful();
+            return response;
+        } else {
+            response.setError(Error.databaseError);
+            return response;
+        }
     }
 }
