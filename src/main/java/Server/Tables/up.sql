@@ -1,16 +1,16 @@
 CREATE TABLE IF NOT EXISTS "file" (
     id              SERIAL4 PRIMARY KEY,
-    name            VARCHAR UNIQUE NOT NULL,
+    name            VARCHAR NOT NULL,
     "memeType"      VARCHAR(6) NOT NULL,
     path            VARCHAR UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "user" (
-    id                  SERIAL4 PRIMARY KEY,
-    username            VARCHAR(26) UNIQUE NOT NULL,
-    password            VARCHAR NOT NULL,
-    email               VARCHAR NOT NULL,
-    "profilePictureId"  INT REFERENCES "file" (id)
+    id                      SERIAL4 PRIMARY KEY,
+    username                VARCHAR(26) UNIQUE NOT NULL,
+    password                VARCHAR NOT NULL,
+    email                   VARCHAR NOT NULL,
+    "profilePictureId"      INT REFERENCES "file" (id) DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "friend" (
@@ -20,14 +20,14 @@ CREATE TABLE IF NOT EXISTS "friend" (
 
 CREATE TABLE IF NOT EXISTS "genre" (
     id          SERIAL4 PRIMARY KEY,
-    name        VARCHAR(26) NOT NULL,
+    name        VARCHAR(26) UNIQUE NOT NULL,
     description VARCHAR(256) DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "artist" (
     id              SERIAL4 PRIMARY KEY,
     name            VARCHAR(256) DEFAULT NULL,
-    genre           INT REFERENCES "genre" (id),
+    "genreId"           INT REFERENCES "genre" (id),
     biography       VARCHAR(512) DEFAULT NULL,
     "profilePictureId"  INT REFERENCES "file" (id),
     "socialLinks"   VARCHAR ARRAY
@@ -58,7 +58,6 @@ CREATE TABLE IF NOT EXISTS "music" (
     "releaseDate"   DATE DEFAULT NULL,
     popularity      INT DEFAULT 0,
     lyric           VARCHAR DEFAULT NULL,
-    "coverId"       INT REFERENCES "file" (id),
     "trackFile"     INT REFERENCES "file" (id)
 );
 
@@ -69,7 +68,8 @@ CREATE TABLE IF NOT EXISTS "playlist" (
     description     VARCHAR DEFAULT NULL,
     popularity      INT DEFAULT 0,
     "isPrivate"     BOOLEAN DEFAULT FALSE,
-    "coverId"       INT REFERENCES "file" (id)
+    "coverId"       INT REFERENCES "file" (id) DEFAULT NULL,
+    "isLock"        BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS "playlistTrack" (
@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS "playlistTrack" (
 
 CREATE TABLE IF NOT EXISTS "musicComments" (
     "musicId"   INT REFERENCES "music" (id) ON DELETE CASCADE NOT NULL,
+    "userId"    INT REFERENCES "user" (id) ON DELETE CASCADE NOT NULL,
     comment     VARCHAR
 );
 
