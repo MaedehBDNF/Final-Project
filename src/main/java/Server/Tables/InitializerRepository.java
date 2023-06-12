@@ -12,6 +12,9 @@ import java.util.Scanner;
 public class InitializerRepository {
     Connection connection;
     Statement statement;
+    String url;
+    String user;
+    String pass;
 
     public InitializerRepository(DatabaseConfigDto config) {
         String url = String.format(
