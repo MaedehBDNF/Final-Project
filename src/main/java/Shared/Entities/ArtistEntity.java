@@ -10,8 +10,8 @@ public class ArtistEntity {
     private String biography;
     private FileDto profilePicture;
     private ArrayList<String> socialMediaLinks;
-    private ArrayList<MusicEntity> tracks;
-    private ArrayList<AlbumEntity> albums;
+    private ArrayList<MusicEntity> tracks = new ArrayList<>();
+    private ArrayList<AlbumEntity> albums = new ArrayList<>();
 
     public int getId() {
         return id;
