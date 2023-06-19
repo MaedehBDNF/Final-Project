@@ -17,6 +17,7 @@ public class TestFX extends Application {
 
         testStart(stage);
         testSignUp(stage);
+        testLogIn(stage);
 
     }
 
@@ -39,6 +40,18 @@ public class TestFX extends Application {
     private static void testSignUp(Stage stage) {
         try {
             Parent root = FXMLLoader.load(TestFX.class.getClassLoader().getResource("SignUp.fxml"));
+            Image icon = new Image("Images/SpotifyIcon.png");
+            stage.getIcons().add(icon);
+            stage.setTitle("SignUp");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private static void testLogIn(Stage stage) {
+        try {
+            Parent root = FXMLLoader.load(TestFX.class.getClassLoader().getResource("LogIn.fxml"));
             Image icon = new Image("Images/SpotifyIcon.png");
             stage.getIcons().add(icon);
             stage.setTitle("SignUp");
