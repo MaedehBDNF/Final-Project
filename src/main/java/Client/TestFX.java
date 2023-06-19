@@ -16,6 +16,7 @@ public class TestFX extends Application {
         // test all pages
 
         testStart(stage);
+        testSignUp(stage);
 
     }
 
@@ -29,6 +30,18 @@ public class TestFX extends Application {
             Image icon = new Image("Images/SpotifyIcon.png");
             stage.getIcons().add(icon);
             stage.setTitle("Spotify");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private static void testSignUp(Stage stage) {
+        try {
+            Parent root = FXMLLoader.load(TestFX.class.getClassLoader().getResource("SignUp.fxml"));
+            Image icon = new Image("Images/SpotifyIcon.png");
+            stage.getIcons().add(icon);
+            stage.setTitle("SignUp");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
