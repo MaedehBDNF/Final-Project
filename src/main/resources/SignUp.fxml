@@ -23,17 +23,17 @@
                   <Font name="Garamond Bold" size="49.0" />
                </font>
             </Label>
-            <Label fx:id="username" layoutX="122.0" layoutY="147.0" prefHeight="35.0" prefWidth="110.0" text="username">
+            <Label fx:id="username" layoutX="122.0" layoutY="144.0" prefHeight="35.0" prefWidth="110.0" text="username">
                <font>
                   <Font name="Georgia" size="20.0" />
                </font>
             </Label>
-            <Label fx:id="password" layoutX="122.0" layoutY="213.0" prefHeight="35.0" prefWidth="110.0" text="password">
+            <Label fx:id="password" layoutX="115.0" layoutY="209.0" prefHeight="35.0" prefWidth="110.0" text="password">
                <font>
                   <Font name="Georgia" size="20.0" />
                </font>
             </Label>
-            <Label fx:id="email" layoutX="134.0" layoutY="286.0" text="e-mail">
+            <Label fx:id="email" layoutX="142.0" layoutY="282.0" text="e-mail">
                <font>
                   <Font name="Georgia" size="20.0" />
                </font>
@@ -43,14 +43,19 @@
                   <Font name="Mongolian Baiti" size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="usernameText" layoutX="232.0" layoutY="151.0" prefHeight="30.0" prefWidth="158.0" />
-            <TextField fx:id="passwordText" layoutX="232.0" layoutY="213.0" prefHeight="30.0" prefWidth="158.0" />
-            <TextField fx:id="emailText" layoutX="232.0" layoutY="282.0" prefHeight="30.0" prefWidth="158.0" />
+            <TextField fx:id="usernameText" layoutX="226.0" layoutY="147.0" prefHeight="24.0" prefWidth="158.0" />
+            <TextField fx:id="passwordText" layoutX="226.0" layoutY="212.0" prefHeight="26.0" prefWidth="158.0" />
+            <TextField fx:id="emailText" layoutX="226.0" layoutY="279.0" prefHeight="24.0" prefWidth="158.0" />
             <ImageView fx:id="backImage" fitHeight="35.0" fitWidth="34.0" layoutX="14.0" layoutY="12.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@Images/back.png" />
                </image>
             </ImageView>
+            <Label fx:id="usenameError" layoutX="177.0" layoutY="185.0" text="This username was taken. please choose another one" textFill="#ea1010fc">
+               <font>
+                  <Font name="Mongolian Baiti" size="14.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

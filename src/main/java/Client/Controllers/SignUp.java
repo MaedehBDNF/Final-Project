@@ -14,7 +14,7 @@ public class SignUp {
     @FXML
     Button SignUp,back;
     @FXML
-    Label username,password,email,invalidEmail ;
+    Label username,password,email,invalidEmail,usenameError ;
 
     public void SignUp() {
 
