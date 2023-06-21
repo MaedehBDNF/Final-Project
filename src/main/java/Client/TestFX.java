@@ -1,4 +1,5 @@
 package Client;
+import Client.Controllers.StartController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,7 +28,10 @@ public class TestFX extends Application {
 
     private static void testStart(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(TestFX.class.getClassLoader().getResource("Start.fxml"));
+            FXMLLoader loader = new FXMLLoader();
+            loader.setController(new StartController());
+            loader.setLocation(TestFX.class.getClassLoader().getResource("Start.fxml"));
+            Parent root = loader.load();
             Image icon = new Image("Images/SpotifyIcon.png");
             stage.getIcons().add(icon);
             stage.setTitle("Spotify");
@@ -39,7 +43,10 @@ public class TestFX extends Application {
     }
     private static void testSignUp(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(TestFX.class.getClassLoader().getResource("SignUp.fxml"));
+            FXMLLoader loader = new FXMLLoader();
+            loader.setController(new StartController());
+            loader.setLocation(TestFX.class.getClassLoader().getResource("SignUp.fxml"));
+            Parent root = loader.load();
             Image icon = new Image("Images/SpotifyIcon.png");
             stage.getIcons().add(icon);
             stage.setTitle("SignUp");
@@ -50,8 +57,10 @@ public class TestFX extends Application {
         }
     }
     private static void testLogIn(Stage stage) {
-        try {
-            Parent root = FXMLLoader.load(TestFX.class.getClassLoader().getResource("LogIn.fxml"));
+        try {FXMLLoader loader = new FXMLLoader();
+            loader.setController(new StartController());
+            loader.setLocation(TestFX.class.getClassLoader().getResource("LogIn.fxml"));
+            Parent root = loader.load();
             Image icon = new Image("Images/SpotifyIcon.png");
             stage.getIcons().add(icon);
             stage.setTitle("SignUp");
