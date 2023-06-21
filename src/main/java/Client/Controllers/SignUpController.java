@@ -39,31 +39,13 @@ public class SignUpController implements Initializable {
     private final String projectDirectory = System.getProperty("user.dir");
     private Stage stage;
     @FXML
-    private TextField usernameText;
-    @FXML
-    private TextField emailText;
+    private TextField usernameText, emailText;
     @FXML
     private PasswordField passwordText;
     @FXML
-    private Button signUp;
+    private Button back, signUp, editProfilePhoto;
     @FXML
-    private Button back;
-    @FXML
-    private Button editProfilePhoto;
-    @FXML
-    private Label username;
-    @FXML
-    private Label password;
-    @FXML
-    private Label email;
-    @FXML
-    private Label invalidEmail;
-    @FXML
-    private Label usernameError;
-    @FXML
-    private Label passwordError;
-    @FXML
-    private Label generalError;
+    private Label username, password, email, invalidEmail, usernameError, passwordError, generalError;
     @FXML
     private Circle profile;
 
@@ -115,9 +97,8 @@ public class SignUpController implements Initializable {
                     } else {
                         this.generalError.setVisible(true);
                     }
-
                 } else {
-                    UserEntity user = (UserEntity)this.mapper.convertValue(response.getData(), UserEntity.class);
+                    UserEntity user = this.mapper.convertValue(response.getData(), UserEntity.class);
                     FileDto profilePicture = this.uploadProfilePicture(user.getId());
                     if (profilePicture == null) {
                         this.generalError.setVisible(true);
@@ -176,6 +157,6 @@ public class SignUpController implements Initializable {
         uploadDto.setReferenceId(userId);
         uploadDto.setUploadType(UploadType.userProfilePicture);
         Response response = this.client.uploadPicture(uploadDto, this.selectedFile);
-        return (FileDto)this.mapper.convertValue(response.getData(), FileDto.class);
+        return this.mapper.convertValue(response.getData(), FileDto.class);
     }
 }

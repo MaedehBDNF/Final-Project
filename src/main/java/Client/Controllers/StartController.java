@@ -29,7 +29,7 @@ public class StartController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        searchBar.setOnKeyPressed(event -> {
+        this.searchBar.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 this.search();
             }
@@ -53,10 +53,11 @@ public class StartController implements Initializable {
         this.loader.loadLoginPage(this.stage);
     }
 
+    @FXML
     public void search() {
         this.stage = (Stage) this.searchBar.getScene().getWindow();
-        Response res = this.client.completeSearch(this.searchBar.getText());
-        SearchResponseDto result = this.mapper.convertValue(res.getData(), SearchResponseDto.class);
-        this.loader.loadSearchPage(this.stage, result);
+        Response response = this.client.completeSearch(this.searchBar.getText());
+        SearchResponseDto result = this.mapper.convertValue(response.getData(), SearchResponseDto.class);
+        this.loader.loadSearchPage(this.stage, result, "Found Items");
     }
 }
