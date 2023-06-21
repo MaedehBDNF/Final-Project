@@ -24,35 +24,53 @@
                   <Font name="Garamond Bold" size="54.0" />
                </font>
             </Label>
-            <TextField fx:id="searchText" layoutX="20.0" layoutY="145.0" onAction="#searchText" prefHeight="26.0" prefWidth="294.0" promptText="search..." />
-            <TextField fx:id="searchAlbumText" layoutX="20.0" layoutY="217.0" onAction="#searchAlbumText" prefHeight="26.0" prefWidth="181.0" promptText="search in Albums" />
-            <TextField fx:id="searchMusicText" layoutX="20.0" layoutY="258.0" onAction="#searchMusicText" prefHeight="26.0" prefWidth="181.0" promptText="search in musics" />
-            <TextField fx:id="searchArtistText" layoutX="20.0" layoutY="297.0" onAction="#searchArtistText" prefHeight="26.0" prefWidth="181.0" promptText="search in Artists" />
-            <Rectangle fx:id="rectanangleBackground" arcHeight="5.0" arcWidth="5.0" fill="#030503d1" height="416.0" layoutX="418.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" width="188.0" />
-            <TextField fx:id="searchPlayListText" layoutX="20.0" layoutY="335.0" onAction="#searchPlayListText" prefHeight="26.0" prefWidth="181.0" promptText="search in playlists" />
-            <TextField fx:id="searchUserText" layoutX="20.0" layoutY="374.0" onAction="#searchUserText" prefHeight="26.0" prefWidth="181.0" promptText="search in users" />
+            <TextField fx:id="searchText" layoutX="20.0" layoutY="145.0" onKeyPressed="#search" prefHeight="26.0" prefWidth="294.0" promptText="search...">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font></TextField>
+            <TextField fx:id="searchAlbumText" layoutX="20.0" layoutY="217.0" onKeyPressed="#searchAlbums" prefHeight="26.0" prefWidth="181.0" promptText="search in Albums">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font></TextField>
+            <TextField fx:id="searchMusicText" layoutX="20.0" layoutY="258.0" onKeyPressed="#searchMusics" prefHeight="26.0" prefWidth="181.0" promptText="search in musics">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font></TextField>
+            <TextField fx:id="searchArtistText" layoutX="20.0" layoutY="297.0" onKeyPressed="#searchArtists" prefHeight="26.0" prefWidth="181.0" promptText="search in Artists">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font></TextField>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#030503d1" height="416.0" layoutX="418.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" width="188.0" />
+            <TextField fx:id="searchPlayListText" layoutX="20.0" layoutY="335.0" onKeyPressed="#searchPlaylists" prefHeight="26.0" prefWidth="181.0" promptText="search in playlists">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font></TextField>
+            <TextField fx:id="searchUserText" layoutX="20.0" layoutY="374.0" onKeyPressed="#searchUsers" prefHeight="26.0" prefWidth="181.0" promptText="search in users">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font></TextField>
             <Label fx:id="searchLabel" layoutX="20.0" layoutY="171.0" text="search in categories">
                <font>
                   <Font name="Gabriola" size="32.0" />
                </font>
             </Label>
-            <Button fx:id="editPicture" layoutX="478.0" layoutY="119.0" mnemonicParsing="false" onAction="#editPicture" text="Edit picture" />
-            <Button fx:id="favoriteAlbumes" layoutX="468.0" layoutY="217.0" mnemonicParsing="false" onAction="#favoriteAlbumes" prefHeight="26.0" prefWidth="100.0" text="favorite Albumes">
+            <Button fx:id="editPicture" layoutX="474.0" layoutY="128.0" mnemonicParsing="false" onAction="#editPicture" text="Edit picture" />
+            <Button fx:id="favoriteAlbums" layoutX="464.0" layoutY="217.0" mnemonicParsing="false" onAction="#favoriteAlbums" prefHeight="26.0" prefWidth="100.0" text="favorite Albums">
                <font>
                   <Font size="10.0" />
                </font>
             </Button>
-            <Button fx:id="friends" layoutX="468.0" layoutY="258.0" mnemonicParsing="false" onAction="#friends" prefHeight="26.0" prefWidth="100.0" text="friends">
+            <Button fx:id="friends" layoutX="464.0" layoutY="258.0" mnemonicParsing="false" onAction="#friends" prefHeight="26.0" prefWidth="100.0" text="friends">
                <font>
                   <Font size="10.0" />
                </font>
             </Button>
-            <Button fx:id="followings" layoutX="468.0" layoutY="297.0" mnemonicParsing="false" onAction="#followings" prefHeight="26.0" prefWidth="100.0" text="followings">
+            <Button fx:id="followings" layoutX="464.0" layoutY="297.0" mnemonicParsing="false" onAction="#followings" prefHeight="26.0" prefWidth="100.0" text="followings">
                <font>
                   <Font size="10.0" />
                </font>
             </Button>
-            <Button fx:id="playLists" layoutX="468.0" layoutY="335.0" mnemonicParsing="false" onAction="#playLists" prefHeight="26.0" prefWidth="100.0" text="playLists">
+            <Button fx:id="playLists" layoutX="464.0" layoutY="335.0" mnemonicParsing="false" onAction="#playLists" prefHeight="26.0" prefWidth="100.0" text="playLists">
                <font>
                   <Font size="10.0" />
                </font>
@@ -62,17 +80,18 @@
                   <Image url="@Images/magnifyingGlass.png" />
                </image>
             </ImageView>
-            <Button fx:id="logout" layoutX="484.0" layoutY="374.0" mnemonicParsing="false" onAction="#logout" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #9CFC98;" text="log out">
+            <Button fx:id="logout" layoutX="481.0" layoutY="374.0" mnemonicParsing="false" onAction="#logout" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #9CFC98;" text="log out">
                <font>
                   <Font name="MT Extra" size="14.0" />
                </font>
             </Button>
-            <Circle fx:id="profilePhoto" fill="#f6f8fa" layoutX="513.0" layoutY="51.0" radius="44.0" stroke="BLACK" strokeType="INSIDE" />
-            <Button fx:id="creatPlayList" layoutX="467.0" layoutY="177.0" mnemonicParsing="false" onAction="#creatPlayList" prefHeight="26.0" prefWidth="100.0" text="creat new playlist">
+            <Circle fx:id="profilePhoto" fill="#f6f8fa" layoutX="514.0" layoutY="55.0" radius="46.0" stroke="BLACK" strokeType="INSIDE" />
+            <Button fx:id="createPlayList" layoutX="463.0" layoutY="177.0" mnemonicParsing="false" onAction="#createPlayList" prefHeight="26.0" prefWidth="100.0" text="create new playlist">
                <font>
                   <Font size="10.0" />
                </font>
             </Button>
+            <Label fx:id="username" alignment="CENTER" layoutX="422.0" layoutY="101.0" prefHeight="17.0" prefWidth="181.0" textFill="#5de658" />
          </children>
       </AnchorPane>
    </children>
