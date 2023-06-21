@@ -7,12 +7,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="457.0" prefWidth="691.0" style="-fx-background-color: #20d762;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.Controllers.Start">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="457.0" prefWidth="691.0" style="-fx-background-color: #20d762;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button fx:id="signUp" layoutX="196.0" layoutY="339.0" mnemonicParsing="false" onAction="#signUp" prefHeight="42.0" prefWidth="126.0" text="SingUp" />
       <Button fx:id="logIn" layoutX="346.0" layoutY="339.0" mnemonicParsing="false" onAction="#logIn" prefHeight="42.0" prefWidth="126.0" text="LogIn" />
-      <TextField fx:id="searchBar" layoutX="144.0" layoutY="285.0" onAction="#search" prefHeight="25.0" prefWidth="381.0" promptText="search...">
+      <TextField fx:id="searchBar" layoutX="144.0" layoutY="285.0" onKeyPressed="#search" prefHeight="25.0" prefWidth="381.0" promptText="search...">
          <font>
             <Font name="System Italic" size="12.0" />
          </font>
