@@ -14,10 +14,7 @@ import Shared.Dto.Music.FindOneMusicDto;
 import Shared.Dto.Music.LikeMusicDto;
 import Shared.Dto.Playlist.*;
 import Shared.Dto.Search.SearchRequestDto;
-import Shared.Dto.User.FollowArtistDto;
-import Shared.Dto.User.FollowUserDto;
-import Shared.Dto.User.LoginDto;
-import Shared.Dto.User.RegisterDto;
+import Shared.Dto.User.*;
 import Shared.Entities.*;
 import Shared.Enums.Status;
 import Shared.Enums.Title;
@@ -35,6 +32,7 @@ import java.util.UUID;
 public class ClientManager {
     private final Socket socket;
     private int currentUserId = -1;
+    private UserEntity currentUser;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private InputStream inputStream;
     private DataInputStream dataInputStream;
@@ -51,6 +49,14 @@ public class ClientManager {
         this.makeDownloadsDirectory();
     }
 
+    public UserEntity getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(UserEntity currentUser) {
+        this.currentUser = currentUser;
+    }
+
     public Response register(RegisterDto dto) {
         Request request = new Request();
         request.setTitle(Title.register);
@@ -58,7 +64,9 @@ public class ClientManager {
         this.sendReqToServer(request);
         Response response = this.getResFromServer();
         if (response.getStatus().equals(Status.successful)) {
-            this.currentUserId = objectMapper.convertValue(response.getData(), UserEntity.class).getId();
+            this.currentUser = objectMapper.convertValue(response.getData(), UserEntity.class);
+            this.currentUserId = this.currentUser.getId();
+
         }
         return response;
     }
@@ -70,7 +78,8 @@ public class ClientManager {
         this.sendReqToServer(request);
         Response response = this.getResFromServer();
         if (response.getStatus().equals(Status.successful)) {
-            this.currentUserId = objectMapper.convertValue(response.getData(), UserEntity.class).getId();
+            this.currentUser = objectMapper.convertValue(response.getData(), UserEntity.class);
+            this.currentUserId = this.currentUser.getId();
         }
         return response;
     }
@@ -193,6 +202,61 @@ public class ClientManager {
     public Response completeSearch(String value) {
         Request request = new Request();
         request.setTitle(Title.completeSearch);
+        SearchRequestDto searchDto = new SearchRequestDto();
+        searchDto.setValue(value);
+        request.setUserId(this.currentUserId);
+        request.setData(searchDto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response searchAlbums(String value) {
+        Request request = new Request();
+        request.setTitle(Title.searchAlbum);
+        SearchRequestDto searchDto = new SearchRequestDto();
+        searchDto.setValue(value);
+        request.setUserId(this.currentUserId);
+        request.setData(searchDto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response searchArtists(String value) {
+        Request request = new Request();
+        request.setTitle(Title.searchArtist);
+        SearchRequestDto searchDto = new SearchRequestDto();
+        searchDto.setValue(value);
+        request.setUserId(this.currentUserId);
+        request.setData(searchDto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response searchMusics(String value) {
+        Request request = new Request();
+        request.setTitle(Title.searchMusic);
+        SearchRequestDto searchDto = new SearchRequestDto();
+        searchDto.setValue(value);
+        request.setUserId(this.currentUserId);
+        request.setData(searchDto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response searchUsers(String value) {
+        Request request = new Request();
+        request.setTitle(Title.searchUser);
+        SearchUserDto searchUserDto = new SearchUserDto();
+        searchUserDto.setUsername(value);
+        request.setUserId(this.currentUserId);
+        request.setData(searchUserDto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response searchPlaylists(String value) {
+        Request request = new Request();
+        request.setTitle(Title.searchPlaylist);
         SearchRequestDto searchDto = new SearchRequestDto();
         searchDto.setValue(value);
         request.setUserId(this.currentUserId);
