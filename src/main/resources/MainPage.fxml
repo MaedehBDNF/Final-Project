@@ -1,11 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.Controllers.MainPage">
+   <children>
+      <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #20d762;">
+         <children>
+            <ImageView fx:id="spotifyLogo" fitHeight="75.0" fitWidth="73.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Images/SpotifyIcon.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="spotifyLabel" layoutX="167.0" layoutY="10.0" prefHeight="75.0" prefWidth="206.0" text="Spotify" textFill="#0b4b28">
+               <font>
+                  <Font name="Garamond Bold" size="54.0" />
+               </font>
+            </Label>
+            <TextField fx:id="searchText" layoutX="20.0" layoutY="145.0" onAction="#searchText" prefHeight="26.0" prefWidth="294.0" promptText="search..." />
+            <TextField fx:id="searchAlbumText" layoutX="20.0" layoutY="217.0" onAction="#searchAlbumText" prefHeight="26.0" prefWidth="181.0" promptText="search in Albums" />
+            <TextField fx:id="searchMusicText" layoutX="20.0" layoutY="258.0" onAction="#searchMusicText" prefHeight="26.0" prefWidth="181.0" promptText="search in musics" />
+            <TextField fx:id="searchArtistText" layoutX="20.0" layoutY="297.0" onAction="#searchArtistText" prefHeight="26.0" prefWidth="181.0" promptText="search in Artists" />
+            <Rectangle fx:id="rectanangleBackground" arcHeight="5.0" arcWidth="5.0" fill="#030503d1" height="416.0" layoutX="418.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" width="188.0" />
+            <TextField fx:id="searchPlayListText" layoutX="20.0" layoutY="335.0" onAction="#searchPlayListText" prefHeight="26.0" prefWidth="181.0" promptText="search in playlists" />
+            <TextField fx:id="searchUserText" layoutX="20.0" layoutY="374.0" onAction="#searchUserText" prefHeight="26.0" prefWidth="181.0" promptText="search in users" />
+            <Label fx:id="searchLabel" layoutX="20.0" layoutY="171.0" text="search in categories">
+               <font>
+                  <Font name="Gabriola" size="32.0" />
+               </font>
+            </Label>
+            <Button fx:id="editPicture" layoutX="478.0" layoutY="119.0" mnemonicParsing="false" onAction="#editPicture" text="Edit picture" />
+            <Button fx:id="favoriteAlbumes" layoutX="468.0" layoutY="217.0" mnemonicParsing="false" onAction="#favoriteAlbumes" prefHeight="26.0" prefWidth="100.0" text="favorite Albumes">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <Button fx:id="friends" layoutX="468.0" layoutY="258.0" mnemonicParsing="false" onAction="#friends" prefHeight="26.0" prefWidth="100.0" text="friends">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <Button fx:id="followings" layoutX="468.0" layoutY="297.0" mnemonicParsing="false" onAction="#followings" prefHeight="26.0" prefWidth="100.0" text="followings">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <Button fx:id="playLists" layoutX="468.0" layoutY="335.0" mnemonicParsing="false" onAction="#playLists" prefHeight="26.0" prefWidth="100.0" text="playLists">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <ImageView fx:id="searchIcon" fitHeight="26.0" fitWidth="16.0" layoutX="292.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Images/magnifyingGlass.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="logout" layoutX="484.0" layoutY="374.0" mnemonicParsing="false" onAction="#logout" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #9CFC98;" text="log out">
+               <font>
+                  <Font name="MT Extra" size="14.0" />
+               </font>
+            </Button>
+            <Circle fx:id="profilePhoto" fill="#f6f8fa" layoutX="513.0" layoutY="51.0" radius="44.0" stroke="BLACK" strokeType="INSIDE" />
+            <Button fx:id="creatPlayList" layoutX="467.0" layoutY="177.0" mnemonicParsing="false" onAction="#creatPlayList" prefHeight="26.0" prefWidth="100.0" text="creat new playlist">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </children>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             prefHeight="400.0" prefWidth="600.0">
