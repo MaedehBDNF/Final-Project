@@ -2,13 +2,14 @@ package Client;
 
 import Client.Controllers.*;
 import Shared.Dto.Search.SearchResponseDto;
-import Shared.Entities.UserEntity;
+import Shared.Entities.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class LoadManager {
     private final ClientManager client;
@@ -58,14 +59,96 @@ public class LoadManager {
         this.basicLoad(loader);
     }
 
-    public void loadSearchPage(Stage stage, SearchResponseDto dto) {
+    public void loadSearchPage(Stage stage, SearchResponseDto dto, String title) {
         stage.close();
         SearchPresentationController controller = new SearchPresentationController();
         controller.setClient(this.client);
         controller.setResults(dto);
+        controller.setTitle(title);
         FXMLLoader loader = new FXMLLoader();
         loader.setController(controller);
         loader.setLocation(getClass().getClassLoader().getResource("SearchPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadMainCompleteSearchPage(Stage stage, SearchResponseDto dto, String title) {
+        stage.close();
+        MainCompleteSearchController controller = new MainCompleteSearchController();
+        controller.setClient(this.client);
+        controller.setResults(dto);
+        controller.setTitle(title);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("SearchPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadSearchPageForAlbums(Stage stage, ArrayList<AlbumEntity> dto, String title) {
+        stage.close();
+        SearchAlbumController controller = new SearchAlbumController();
+        controller.setClient(this.client);
+        controller.setAlbums(dto);
+        controller.setTitle(title);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("SearchPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadSearchPageForUsers(Stage stage, ArrayList<UserEntity> dto, String title) {
+        stage.close();
+        SearchUserController controller = new SearchUserController();
+        controller.setClient(this.client);
+        controller.setUsers(dto);
+        controller.setTitle(title);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("SearchPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadSearchPageForArtists(Stage stage, ArrayList<ArtistEntity> dto, String title) {
+        stage.close();
+        SearchArtistController controller = new SearchArtistController();
+        controller.setClient(this.client);
+        controller.setArtists(dto);
+        controller.setTitle(title);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("SearchPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadSearchPageForPlaylists(Stage stage, ArrayList<PlaylistEntity> dto, String title) {
+        stage.close();
+        SearchPlaylistController controller = new SearchPlaylistController();
+        controller.setClient(this.client);
+        controller.setPlaylists(dto);
+        controller.setTitle(title);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("SearchPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadSearchPageForMusics(Stage stage, ArrayList<MusicEntity> dto, String title) {
+        stage.close();
+        SearchMusicController controller = new SearchMusicController();
+        controller.setClient(this.client);
+        controller.setMusics(dto);
+        controller.setTitle(title);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("SearchPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadCreateNewPlaylistPage(Stage stage) {
+        stage.close();
+        CreateNewPlaylistController controller = new CreateNewPlaylistController();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("CreateNewPlaylist.fxml"));
         this.basicLoad(loader);
     }
 
