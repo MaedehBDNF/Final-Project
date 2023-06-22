@@ -130,7 +130,8 @@ public class InitializerService {
 
         createArtistDto.setName("Eminem");
         createArtistDto.setGenreId(this.genres.get("Hip hop"));
-        createArtistDto.setBiography("Marshall Bruce Mathers III, known professionally as Eminem, is an American rapper, songwriter, and record producer. He is credited with popularizing hip hop in middle America and is critically acclaimed as one of the greatest rappers of all time.");
+        createArtistDto.setBiography("Marshall Bruce Mathers III, known professionally as Eminem, is an American rapper, songwriter, and record producer. \n" +
+                "He is credited with popularizing hip hop in middle America and is critically acclaimed as one of the greatest rappers of all time.");
         uploadDto.setName("Eminem");
         uploadDto.setMemeType("jpg");
         uploadDto.setUploadType(UploadType.artistProfilePicture);
@@ -143,7 +144,8 @@ public class InitializerService {
 
         createArtistDto.setName("Drake");
         createArtistDto.setGenreId(this.genres.get("Hip hop"));
-        createArtistDto.setBiography("Aubrey Drake Graham is a Canadian rapper, singer, and songwriter. An influential figure in contemporary popular music, Drake has been credited for popularizing singing and R&B sensibilities in hip hop.");
+        createArtistDto.setBiography("Aubrey Drake Graham is a Canadian rapper, singer, and songwriter. \n" +
+                "An influential figure in contemporary popular music, Drake has been credited for popularizing singing and R&B sensibilities in hip hop.");
         uploadDto.setName("Drake");
         uploadDto.setMemeType("jpg");
         uploadDto.setUploadType(UploadType.artistProfilePicture);
@@ -156,7 +158,9 @@ public class InitializerService {
 
         createArtistDto.setName("Norah Jones");
         createArtistDto.setGenreId(this.genres.get("Jazz"));
-        createArtistDto.setBiography("Norah Jones is an American singer, songwriter, and pianist. She has won several awards for her music and, as of 2023, had sold more than 50 million records worldwide. Billboard named her the top jazz artist of the 2000's decade.");
+        createArtistDto.setBiography("Norah Jones is an American singer, songwriter, and pianist. \n" +
+                "She has won several awards for her music and, as of 2023, had sold more than 50 million records worldwide. \n" +
+                "Billboard named her the top jazz artist of the 2000's decade.");
         uploadDto.setName("Norah Jones");
         uploadDto.setMemeType("jpg");
         uploadDto.setUploadType(UploadType.artistProfilePicture);
@@ -169,7 +173,9 @@ public class InitializerService {
 
         createArtistDto.setName("Adele");
         createArtistDto.setGenreId(this.genres.get("Pop"));
-        createArtistDto.setBiography("Adele Laurie Blue Adkins MBE is an English singer-songwriter. After graduating in arts from the BRIT School in 2006, Adele signed a record deal with XL Recordings. Her debut album, 19, was released in 2008 and spawned the UK top-five singles \"Chasing Pavements\" and \"Make You Feel My Love\".");
+        createArtistDto.setBiography("Adele Laurie Blue Adkins MBE is an English singer-songwriter.\n" +
+                "After graduating in arts from the BRIT School in 2006, Adele signed a record deal with XL Recordings.\n" +
+                "Her debut album, 19, was released in 2008 and spawned the UK top-five singles \"Chasing Pavements\" and \"Make You Feel My Love\".");
         uploadDto.setName("Adele");
         uploadDto.setMemeType("jpg");
         uploadDto.setUploadType(UploadType.artistProfilePicture);
@@ -182,7 +188,9 @@ public class InitializerService {
 
         createArtistDto.setName("Taylor Swift");
         createArtistDto.setGenreId(this.genres.get("Pop"));
-        createArtistDto.setBiography("Taylor Alison Swift is an American singer-songwriter. Recognized for her genre-spanning discography, songwriting, and artistic reinventions, Swift is a prominent cultural figure who has been cited as an influence on a generation of music artists.");
+        createArtistDto.setBiography("Taylor Alison Swift is an American singer-songwriter.\n" +
+                "Recognized for her genre-spanning discography, songwriting, and artistic reinventions, \n" +
+                "Swift is a prominent cultural figure who has been cited as an influence on a generation of music artists.");
         uploadDto.setName("Taylor Swift");
         uploadDto.setMemeType("jpg");
         uploadDto.setUploadType(UploadType.artistProfilePicture);
@@ -194,7 +202,8 @@ public class InitializerService {
 
         createArtistDto.setName("Justin Bieber");
         createArtistDto.setGenreId(this.genres.get("Pop"));
-        createArtistDto.setBiography("Justin Drew Bieber is a Canadian singer. He is recognized for his genre-melding musicianship and global influence in modern-day popular music.");
+        createArtistDto.setBiography("Justin Drew Bieber is a Canadian singer.\n" +
+                "He is recognized for his genre-melding musicianship and global influence in modern-day popular music.");
         uploadDto.setName("Justin Bieber");
         uploadDto.setMemeType("jpg");
         uploadDto.setUploadType(UploadType.artistProfilePicture);
