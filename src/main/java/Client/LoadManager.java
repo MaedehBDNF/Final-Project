@@ -185,6 +185,16 @@ public class LoadManager {
         this.basicLoad(loader);
     }
 
+    public void loadArtistPresentationPage(ArtistEntity artist) {
+        ArtistPresentationController controller = new ArtistPresentationController();
+        controller.setClient(this.client);
+        controller.setArtist(artist);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("ArtistPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
     // todo: Complete
 
     private void basicLoad(FXMLLoader loader) {

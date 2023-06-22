@@ -2,6 +2,7 @@ package Client.Controllers;
 
 import Client.ClientManager;
 import Client.LoadManager;
+import Shared.Dto.Artist.FindOneArtistDto;
 import Shared.Dto.Search.SearchResponseDto;
 import Shared.Dto.User.FindOneUserDto;
 import Shared.Entities.*;
@@ -94,7 +95,8 @@ public class MainCompleteSearchController implements Initializable {
                     artistButton.setPrefHeight(30);
                     artistButton.setPrefWidth(1000);
                     artistButton.setOnAction(event -> {
-                        System.out.println(artistButton.getText());
+                        ArtistEntity artist = (ArtistEntity) artistButton.getUserData();
+                        this.loader.loadArtistPresentationPage(this.fullInfoOfArtist(artist.getId()));
                     });
                     this.results.getChildren().add(artistButton);
                 }
@@ -148,5 +150,12 @@ public class MainCompleteSearchController implements Initializable {
         dto.setUserId(id);
         Response response = this.client.findOneUser(dto);
         return this.mapper.convertValue(response.getData(), UserEntity.class);
+    }
+
+    private ArtistEntity fullInfoOfArtist(int artistId) {
+        FindOneArtistDto dto = new FindOneArtistDto();
+        dto.setId(artistId);
+        Response response = this.client.findOneArtist(dto);
+        return this.mapper.convertValue(response.getData(), ArtistEntity.class);
     }
 }

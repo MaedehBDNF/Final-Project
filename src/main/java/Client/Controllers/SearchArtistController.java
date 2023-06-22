@@ -2,7 +2,10 @@ package Client.Controllers;
 
 import Client.ClientManager;
 import Client.LoadManager;
+import Shared.Dto.Artist.FindOneArtistDto;
 import Shared.Entities.ArtistEntity;
+import Shared.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -17,6 +20,7 @@ import java.util.ResourceBundle;
 public class SearchArtistController implements Initializable {
     private ClientManager client;
     private LoadManager loader;
+    private final ObjectMapper mapper = new ObjectMapper();
     private ArrayList<ArtistEntity> artists;
     private Stage stage;
     private String title;
@@ -40,7 +44,8 @@ public class SearchArtistController implements Initializable {
                 artistButton.setPrefHeight(30);
                 artistButton.setPrefWidth(1000);
                 artistButton.setOnAction(event -> {
-                    System.out.println(artistButton.getText());
+                    ArtistEntity artist = (ArtistEntity) artistButton.getUserData();
+                    this.loader.loadArtistPresentationPage(this.fullInfoOfArtist(artist.getId()));
                 });
                 this.results.getChildren().add(artistButton);
             }
@@ -64,5 +69,12 @@ public class SearchArtistController implements Initializable {
 
     public void setArtists(ArrayList<ArtistEntity> artists) {
         this.artists = artists;
+    }
+
+    private ArtistEntity fullInfoOfArtist(int artistId) {
+        FindOneArtistDto dto = new FindOneArtistDto();
+        dto.setId(artistId);
+        Response response = this.client.findOneArtist(dto);
+        return this.mapper.convertValue(response.getData(), ArtistEntity.class);
     }
 }
