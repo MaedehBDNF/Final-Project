@@ -26,6 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.net.Socket;
 import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class ClientManager {
@@ -41,6 +43,7 @@ public class ClientManager {
     private PublicKey serverPubKey;
     private AESEncryption aesEncryption;
     private final String downloadDirectory = System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\Downloads\\";
+    private int maximumRequestWithoutLogin = 5;
 
     public ClientManager(Socket socket) {
         this.socket = socket;
@@ -69,7 +72,7 @@ public class ClientManager {
         if (response.getStatus().equals(Status.successful)) {
             this.currentUser = objectMapper.convertValue(response.getData(), UserEntity.class);
             this.currentUserId = this.currentUser.getId();
-
+            this.maximumRequestWithoutLogin = 5;
         }
         return response;
     }
@@ -83,6 +86,7 @@ public class ClientManager {
         if (response.getStatus().equals(Status.successful)) {
             this.currentUser = objectMapper.convertValue(response.getData(), UserEntity.class);
             this.currentUserId = this.currentUser.getId();
+            this.maximumRequestWithoutLogin = 5;
         }
         return response;
     }
@@ -144,6 +148,12 @@ public class ClientManager {
     }
 
     public String download(FileDto dto) {
+        if (this.currentUserId == -1) {
+            if (!((new ArrayList<>(Arrays.asList("png", "jpg", "jpeg"))).contains(dto.getMemeType().toLowerCase()))) {
+                if (this.maximumRequestWithoutLogin == 0) return null;
+                this.maximumRequestWithoutLogin--;
+            }
+        }
         // check if file exists, return path from local
         String path = this.downloadDirectory + dto.getName() + "." + dto.getMemeType();
         File file = new File(path);
@@ -434,6 +444,8 @@ public class ClientManager {
         request.setTitle(Title.logOut);
         request.setUserId(this.currentUserId);
         this.sendReqToServer(request);
+        this.currentUserId = -1;
+        this.currentUser = null;
         return this.getResFromServer();
     }
 
