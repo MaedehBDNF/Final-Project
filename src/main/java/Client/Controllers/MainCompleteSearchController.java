@@ -3,7 +3,10 @@ package Client.Controllers;
 import Client.ClientManager;
 import Client.LoadManager;
 import Shared.Dto.Search.SearchResponseDto;
+import Shared.Dto.User.FindOneUserDto;
 import Shared.Entities.*;
+import Shared.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,11 +16,13 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class MainCompleteSearchController implements Initializable {
     private ClientManager client;
     private LoadManager loader;
+    private final ObjectMapper mapper = new ObjectMapper();
     private SearchResponseDto searchResponseDto;
     private Stage stage;
     private String title;
@@ -104,7 +109,8 @@ public class MainCompleteSearchController implements Initializable {
                     userButton.setPrefHeight(30);
                     userButton.setPrefWidth(1000);
                     userButton.setOnAction(event -> {
-                        System.out.println(userButton.getText());
+                        UserEntity user = (UserEntity) userButton.getUserData();
+                        this.loader.loadUserPresentationPage(this.fullInfoOfUser(user.getId()), this.getUserPlaylists(user.getId()));
                     });
                     this.results.getChildren().add(userButton);
                 }
@@ -129,5 +135,18 @@ public class MainCompleteSearchController implements Initializable {
 
     public void setResults(SearchResponseDto dto) {
         this.searchResponseDto = dto;
+    }
+
+    private ArrayList<PlaylistEntity> getUserPlaylists(int userId) {
+        Response response = this.client.getUserPlaylists(userId);
+        PlaylistEntity[] playlistArr = this.mapper.convertValue(response.getData(), PlaylistEntity[].class);
+        return new ArrayList<PlaylistEntity>(Arrays.asList(playlistArr));
+    }
+
+    private UserEntity fullInfoOfUser(int id) {
+        FindOneUserDto dto = new FindOneUserDto();
+        dto.setUserId(id);
+        Response response = this.client.findOneUser(dto);
+        return this.mapper.convertValue(response.getData(), UserEntity.class);
     }
 }
