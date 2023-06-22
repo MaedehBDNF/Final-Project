@@ -1,5 +1,7 @@
 package Shared.Entities;
 
+import Shared.Dto.File.FileDto;
+
 import java.time.LocalDate;
 
 public class AlbumEntity {
@@ -9,7 +11,7 @@ public class AlbumEntity {
     private GenreEntity genre;
     private LocalDate releaseDate;
     private int popularity = 0;
-    private FileEntity cover;
+    private FileDto cover;
 
     public int getId() {
         return id;
@@ -59,11 +61,11 @@ public class AlbumEntity {
         this.popularity = popularity;
     }
 
-    public FileEntity getCover() {
+    public FileDto getCover() {
         return cover;
     }
 
-    public void setCover(FileEntity cover) {
+    public void setCover(FileDto cover) {
         this.cover = cover;
     }
 

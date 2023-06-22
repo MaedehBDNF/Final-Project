@@ -1,5 +1,6 @@
 package Server.Album;
 
+import Shared.Dto.File.FileDto;
 import Shared.Entities.*;
 import Server.Config.DatabaseConfigDto;
 import Shared.Dto.Album.CreatorAlbumDto;
@@ -65,8 +66,7 @@ public class AlbumRepository {
                 "popularity, " +
                 "\"file\".id AS \"coverId\"," +
                 "\"file\".name AS \"coverName\", " +
-                "\"file\".\"memeType\" AS \"coverMemeType\", " +
-                "\"file\".path AS \"filePath\" " +
+                "\"file\".\"memeType\" AS \"coverMemeType\" " +
                 "FROM \"album\" " +
                 "LEFT JOIN \"artist\" ON \"album\".\"artistId\" = \"artist\".id " +
                 "LEFT JOIN \"genre\" ON \"album\".\"genreId\" = \"genre\".id " +
@@ -78,7 +78,7 @@ public class AlbumRepository {
             ResultSet rs = selectStatement.executeQuery();
             ArtistEntity artist = new ArtistEntity();
             GenreEntity genre = new GenreEntity();
-            FileEntity cover = new FileEntity();
+            FileDto cover = new FileDto();
             if (rs.next()){
                 album.setId(rs.getInt("albumId"));
                 album.setTitle(rs.getString("title"));
@@ -90,10 +90,9 @@ public class AlbumRepository {
                 album.setGenre(genre);
                 album.setReleaseDate(rs.getDate("releaseDate").toLocalDate());
                 album.setPopularity(rs.getInt("popularity"));
-                cover.setId(rs.getInt(rs.getInt("coverId")));
+                cover.setId(rs.getInt("coverId"));
                 cover.setName(rs.getString("coverName"));
                 cover.setMemeType(rs.getString("coverMemeType"));
-                cover.setPath(rs.getString("filePath"));
                 album.setCover(cover);
             }
         } catch (SQLException e){
