@@ -13,10 +13,7 @@ import Shared.Dto.Music.LikeMusicDto;
 import Shared.Dto.Playlist.*;
 import Shared.Dto.Search.SearchRequestDto;
 import Shared.Dto.Search.SearchResponseDto;
-import Shared.Dto.User.FollowArtistDto;
-import Shared.Dto.User.FollowUserDto;
-import Shared.Dto.User.LoginDto;
-import Shared.Dto.User.RegisterDto;
+import Shared.Dto.User.*;
 import Shared.Entities.*;
 import Shared.Enums.Status;
 import Shared.Enums.Title;
@@ -86,8 +83,8 @@ public class Test {
 //        findAllGenres();
 //        followUser(2);
 //        followArtist(4);
-//        getUserFriends();
-//        getUserFollowings();
+//        getUserFriends(4);
+//        getUserFollowings(3);
 //        findAlbumSongs(2);
 //        likeAlbum(1);
 //        likeAlbum(2);
@@ -99,7 +96,7 @@ public class Test {
 //        addCommentToMusic(1);
 //        addCommentToMusic(2);
 //        findOneMusic(1);
-//        findAllUserPlaylists();
+//        findAllUserPlaylists(1);
 //        addMusicToPlaylist(1, playlistEntity.getId());
 //        addMusicToPlaylist(1, playlistEntity.getId());
 //        addMusicToPlaylist(2, playlistEntity.getId());
@@ -115,7 +112,7 @@ public class Test {
 //        login("user2", "user2");
 //        addPlaylist(playlistEntity.getId(), currentUserID);
 //        likePlaylist(playlistEntity.getId(), currentUserID);
-//        findAllUserPlaylists();
+//        findAllUserPlaylists(1);
 
         // test without login
         System.out.println("WITHOUT LOGIN");
@@ -354,18 +351,24 @@ public class Test {
         getResFromServer();
     }
 
-    private static void getUserFriends() {
+    private static void getUserFriends(int id) {
+        FindUserFriendsDto findUserFriendsDto = new FindUserFriendsDto();
+        findUserFriendsDto.setUserId(id);
         Request request = new Request();
         request.setTitle(Title.getUserFriends);
         request.setUserId(currentUserID);
+        request.setData(findUserFriendsDto);
         sendReqToServer(request);
         getResFromServer();
     }
 
-    private static void getUserFollowings() {
+    private static void getUserFollowings(int id) {
+        FindUserFollowingsDto findUserFollowingsDto = new FindUserFollowingsDto();
+        findUserFollowingsDto.setUserId(id);
         Request request = new Request();
         request.setTitle(Title.getUserFollowings);
         request.setUserId(currentUserID);
+        request.setData(findUserFollowingsDto);
         sendReqToServer(request);
         getResFromServer();
     }
@@ -455,6 +458,9 @@ public class Test {
         Request request = new Request();
         request.setUserId(currentUserID);
         request.setTitle(Title.findAllUserPlaylists);
+        FindUserPlaylistsDto findUserPlaylistsDto = new FindUserPlaylistsDto();
+        findUserPlaylistsDto.setUserId(currentUserID);
+        request.setData(findUserPlaylistsDto);
         sendReqToServer(request);
         Response response = getResFromServer();
         PlaylistEntity[] pls = objectMapper.convertValue(response.getData(), PlaylistEntity[].class);
