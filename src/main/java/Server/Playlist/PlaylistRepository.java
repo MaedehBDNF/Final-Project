@@ -185,6 +185,32 @@ public class PlaylistRepository {
         return new PlaylistEntity();
     }
 
+    public ArrayList<PlaylistEntity> findUserPublicPlaylists(int userId) {
+        ArrayList<PlaylistEntity> playlists = new ArrayList<>();
+        String query = "SELECT " +
+                "\"playlist\".id, " +
+                "\"playlist\".title, " +
+                "\"playlist\".popularity " +
+                "FROM \"userPlaylists\" " +
+                "LEFT JOIN \"playlist\" ON \"userPlaylists\".\"playlistId\" = \"playlist\".id " +
+                "WHERE \"userPlaylists\".\"userId\" = ? AND NOT \"playlist\".\"isPrivate\";";
+        try {
+            PreparedStatement selectStatement = this.connection.prepareStatement(query);
+            selectStatement.setInt(1, userId);
+            ResultSet rs = selectStatement.executeQuery();
+            while (rs.next()){
+                PlaylistEntity playlist = new PlaylistEntity();
+                playlist.setId(rs.getInt("id"));
+                playlist.setTitle(rs.getString("title"));
+                playlist.setPopularity(rs.getInt("popularity"));
+                playlists.add(playlist);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return playlists;
+    }
+
     public ArrayList<PlaylistEntity> search(String str, int creatorId) {
         ArrayList<PlaylistEntity> playlists = new ArrayList<>();
         ArrayList<Integer> playlistIds = new ArrayList<>();

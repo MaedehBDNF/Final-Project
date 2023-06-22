@@ -488,10 +488,14 @@ public class Manager implements Runnable {
         return response;
     }
 
-    private Response findAllUserPlaylist() {
+    private Response findAllUserPlaylist(int userId) {
         Response response = new Response();
         response.setTitle(Title.findAllUserPlaylists);
-        response.setData(this.playlistService.findAllUserPlaylists(currentUserId));
+        if (userId == this.currentUserId) {
+            response.setData(this.playlistService.findAllUserPlaylists(userId));
+        } else {
+            response.setData(this.playlistService.findUserPublicPlaylists(userId));
+        }
         response.successful();
         return response;
     }

@@ -58,7 +58,11 @@ public class PlaylistService {
         return this.playlistRepository.findAllUserPlaylists(userId);
     }
 
-    public PlaylistEntity findUserPlaylists(int userId, int playlist) {
+    public ArrayList<PlaylistEntity> findUserPublicPlaylists(int userId) {
+        return this.playlistRepository.findUserPublicPlaylists(userId);
+    }
+
+    private PlaylistEntity findUserPlaylists(int userId, int playlist) {
         return this.playlistRepository.findUserPlaylists(userId, playlist);
     }
 
