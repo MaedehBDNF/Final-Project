@@ -63,7 +63,8 @@ public class AlbumRepository {
                 "\"genre\".name AS \"genreName\", " +
                 "\"releaseDate\", " +
                 "popularity, " +
-                "\"file\".id AS \"coverId\", " +
+                "\"file\".id AS \"coverId\"," +
+                "\"file\".name AS \"coverName\", " +
                 "\"file\".\"memeType\" AS \"coverMemeType\", " +
                 "\"file\".path AS \"filePath\" " +
                 "FROM \"album\" " +
@@ -90,6 +91,7 @@ public class AlbumRepository {
                 album.setReleaseDate(rs.getDate("releaseDate").toLocalDate());
                 album.setPopularity(rs.getInt("popularity"));
                 cover.setId(rs.getInt(rs.getInt("coverId")));
+                cover.setName(rs.getString("coverName"));
                 cover.setMemeType(rs.getString("coverMemeType"));
                 cover.setPath(rs.getString("filePath"));
                 album.setCover(cover);

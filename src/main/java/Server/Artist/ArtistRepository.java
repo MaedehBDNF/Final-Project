@@ -71,7 +71,9 @@ public class ArtistRepository {
                 "\"album\".id AS \"albumId\", " +
                 "\"album\".title AS \"albumTitle\", " +
                 "\"album\".popularity AS \"albumPopularity\", " +
-                "\"file\".id AS \"profilePictureId\" " +
+                "\"file\".id AS \"profilePictureId\"," +
+                "\"file\".name AS \"fileName\", " +
+                "\"file\".\"memeType\" AS \"fileMemeType\" " +
                 "FROM \"artist\" " +
                 "LEFT JOIN \"genre\" ON \"artist\".\"genreId\" = \"genre\".id " +
                 "LEFT JOIN \"music\" ON \"artist\".id = \"music\".\"artistId\" " +
@@ -102,6 +104,8 @@ public class ArtistRepository {
 
                 if (artist.getProfilePicture() == null){
                     profilePicture.setId(rs.getInt("profilePictureId"));
+                    profilePicture.setName(rs.getString("fileName"));
+                    profilePicture.setMemeType(rs.getString("fileMemeType"));
                     artist.setProfilePicture(profilePicture);
                 }
 

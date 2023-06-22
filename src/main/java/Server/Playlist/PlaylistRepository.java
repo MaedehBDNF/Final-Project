@@ -81,17 +81,20 @@ public class PlaylistRepository {
     public PlaylistEntity findOne(int id) {
         PlaylistEntity playlistEntity = new PlaylistEntity();
         String query = "SELECT " +
-                "id, " +
+                "\"playlist\".id As \"playlistId\", " +
                 "title, " +
                 "\"creatorId\", " +
                 "description, " +
                 "popularity, " +
                 "\"isPrivate\", " +
-                "\"coverId\", " +
                 "\"isLock\", " +
-                "\"playlistTrack\".\"musicId\" " +
+                "\"playlistTrack\".\"musicId\", " +
+                "\"file\".id AS \"coverId\", " +
+                "\"file\".name AS \"coverName\", " +
+                "\"file\".\"memeType\" AS \"coverMemeType\" " +
                 "FROM \"playlist\" " +
-                "LEFT JOIN \"playlistTrack\" ON \"playlistTrack\".\"playlistId\" = \"playlist\".id " +
+                "LEFT JOIN \"playlistTrack\" ON \"playlistTrack\".\"playlistId\" = \"playlist\".id" +
+                "LEFT JOIN \"file\" ON \"playlist\".\"coverId\" = \"file\".id " +
                 "WHERE \"playlist\".id = ? " +
                 "ORDER BY \"playlistTrack\".turn DESC;";
         try {
@@ -104,7 +107,7 @@ public class PlaylistRepository {
             ArrayList<Integer> trackIds = new ArrayList<>();
             while (rs.next()){
                 if (playlistEntity.getId() == 0){
-                    playlistEntity.setId(rs.getInt("id"));
+                    playlistEntity.setId(rs.getInt("playlistId"));
                     playlistEntity.setTitle(rs.getString("title"));
                     creator.setId(rs.getInt("creatorId"));
                     playlistEntity.setCreator(creator);
@@ -112,6 +115,8 @@ public class PlaylistRepository {
                     playlistEntity.setPopularity(rs.getInt("popularity"));
                     playlistEntity.setPrivatePL(rs.getBoolean("isPrivate"));
                     cover.setId(rs.getInt("coverId"));
+                    cover.setName(rs.getString("coverName"));
+                    cover.setMemeType(rs.getString("coverMemeType"));
                     playlistEntity.setLock(rs.getBoolean("isLock"));
                     playlistEntity.setCover(cover);
                 }

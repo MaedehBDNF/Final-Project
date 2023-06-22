@@ -60,7 +60,6 @@ public class Manager implements Runnable {
     private String AES_SECRET = "";
     private AESEncryption aesEncryption;
 
-    private int maximumRequestWithoutLogin = 5;
 
     public Manager(Socket socket, DatabaseConfigDto config) {
         this.userService = new UserService(config);
@@ -210,12 +209,6 @@ public class Manager implements Runnable {
                 downloadDto = this.mapper.convertValue(request.getData(), DownloadDto.class);
                 return this.fileService.getFileInfo(downloadDto);
             case download:
-                if (this.currentUserId == -1) {
-                    if (this.maximumRequestWithoutLogin == 0) break;
-                    this.maximumRequestWithoutLogin--;
-                } else {
-                    if (request.getUserId() != this.currentUserId) break;
-                }
                 downloadDto = this.mapper.convertValue(request.getData(), DownloadDto.class);
                 this.fileService.download(downloadDto);
                 this.needResponse = false;
@@ -330,7 +323,6 @@ public class Manager implements Runnable {
     private Response register(RegisterDto registerDto){
         Response response = this.userService.register(registerDto);
         if (response.getStatus().equals(Status.successful)){
-            this.maximumRequestWithoutLogin = 5;
             this.currentUserId = ((UserEntity) response.getData()).getId();
         }
         return response;
@@ -339,7 +331,6 @@ public class Manager implements Runnable {
     private Response login(LoginDto loginDto) {
         Response response = this.userService.login(loginDto);
         if (response.getStatus().equals(Status.successful)){
-            this.maximumRequestWithoutLogin = 5;
             this.currentUserId = ((UserEntity) response.getData()).getId();
         }
         return response;
