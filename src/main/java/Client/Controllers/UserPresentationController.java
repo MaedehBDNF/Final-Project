@@ -95,9 +95,9 @@ public class UserPresentationController implements Initializable {
         dto.setFriendId(this.user.getId());
         Response response = this.client.followUser(dto);
         if (response.getStatus().equals(Status.successful)) {
-            this.message.setText("This user is your friend now.");
+            this.addToFriends.setText("added to friends");
         } else {
-            this.message.setText("Sorry something went wrong.");
+            this.message.setText("Sorry something went wrong!");
         }
         this.message.setVisible(true);
     }
