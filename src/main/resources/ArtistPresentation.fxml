@@ -48,7 +48,7 @@
         </TextArea>
         <Circle fill="#083808" layoutX="81.0" layoutY="77.0" radius="74.0" stroke="BLACK" strokeType="INSIDE" />
         <Circle fx:id="artistProfile" fill="#f0f1f2" layoutX="81.0" layoutY="77.0" radius="66.0" stroke="BLACK" strokeType="INSIDE" />
-        <Label fx:id="message" layoutX="518.0" layoutY="102.0" prefHeight="17.0" prefWidth="132.0" textFill="#f21212" visible="false">
+        <Label fx:id="message" layoutX="521.0" layoutY="76.0" prefHeight="17.0" prefWidth="157.0" textFill="#f21212">
             <font>
                 <Font size="10.0" />
             </font></Label>
