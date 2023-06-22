@@ -25,7 +25,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
 import java.security.PublicKey;
 import java.util.UUID;
 
@@ -47,6 +46,10 @@ public class ClientManager {
         this.socket = socket;
         this.startConnection();
         this.makeDownloadsDirectory();
+    }
+
+    public int getCurrentUserId() {
+        return currentUserId;
     }
 
     public UserEntity getCurrentUser() {
@@ -122,6 +125,15 @@ public class ClientManager {
         return this.getResFromServer();
     }
 
+    public Response findOneUser(FindOneUserDto dto) {
+        Request request = new Request();
+        request.setTitle(Title.findOneUser);
+        request.setUserId(this.currentUserId);
+        request.setData(dto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
     public Response getDownloadInfo(DownloadDto dto){
         Request request = new Request();
         request.setUserId(this.currentUserId);
@@ -167,18 +179,24 @@ public class ClientManager {
         return this.getResFromServer();
     }
 
-    public Response getUserFriends() {
+    public Response getUserFriends(int userId) {
         Request request = new Request();
         request.setTitle(Title.getUserFriends);
         request.setUserId(this.currentUserId);
+        FindUserFriendsDto dto = new FindUserFriendsDto();
+        dto.setUserId(userId);
+        request.setData(dto);
         this.sendReqToServer(request);
         return this.getResFromServer();
     }
 
-    public Response getUserFollowings() {
+    public Response getUserFollowings(int userId) {
         Request request = new Request();
         request.setTitle(Title.getUserFollowings);
         request.setUserId(this.currentUserId);
+        FindUserFollowingsDto dto = new FindUserFollowingsDto();
+        dto.setUserId(userId);
+        request.setData(dto);
         this.sendReqToServer(request);
         return this.getResFromServer();
     }
@@ -191,10 +209,13 @@ public class ClientManager {
         return this.getResFromServer();
     }
 
-    public Response getUserPlaylists() {
+    public Response getUserPlaylists(int userId) {
         Request request = new Request();
         request.setUserId(this.currentUserId);
         request.setTitle(Title.findAllUserPlaylists);
+        FindUserPlaylistsDto dto = new FindUserPlaylistsDto();
+        dto.setUserId(userId);
+        request.setData(dto);
         this.sendReqToServer(request);
         return this.getResFromServer();
     }

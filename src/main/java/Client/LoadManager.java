@@ -152,6 +152,39 @@ public class LoadManager {
         this.basicLoad(loader);
     }
 
+    public void loadUserPresentationPage(UserEntity user, ArrayList<PlaylistEntity> pls) {
+        UserPresentationController controller = new UserPresentationController();
+        controller.setClient(this.client);
+        controller.setUser(user);
+        controller.setPlaylists(pls);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("UserPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadFriendsPresentationPage(ArrayList<UserEntity> friends, String title) {
+        FriendsPresentationController controller = new FriendsPresentationController();
+        controller.setClient(this.client);
+        controller.setFriends(friends);
+        controller.setTitle(title);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("ResultsPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadFollowingsPresentationPage(ArrayList<ArtistEntity> followings, String title) {
+        FollowingsPresentationController controller = new FollowingsPresentationController();
+        controller.setClient(this.client);
+        controller.setFollowings(followings);
+        controller.setTitle(title);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("ResultsPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
     // todo: Complete
 
     private void basicLoad(FXMLLoader loader) {

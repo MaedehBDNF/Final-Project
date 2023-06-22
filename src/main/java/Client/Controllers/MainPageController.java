@@ -180,7 +180,7 @@ public class MainPageController implements Initializable {
     @FXML
     private void friends() {
         this.stage = (Stage)this.logout.getScene().getWindow();
-        Response response = this.client.getUserFriends();
+        Response response = this.client.getUserFriends(this.client.getCurrentUserId());
         UserEntity[] friendsArr = this.mapper.convertValue(response.getData(), UserEntity[].class);
         ArrayList<UserEntity> friends = new ArrayList<>(Arrays.asList(friendsArr));
         this.loader.loadSearchPageForUsers(this.stage, friends, "Your Friends");
@@ -189,7 +189,7 @@ public class MainPageController implements Initializable {
     @FXML
     private void followings() {
         this.stage = (Stage)this.logout.getScene().getWindow();
-        Response response = this.client.getUserFollowings();
+        Response response = this.client.getUserFollowings(this.client.getCurrentUserId());
         ArtistEntity[] followingsArr = this.mapper.convertValue(response.getData(), ArtistEntity[].class);
         ArrayList<ArtistEntity> followings = new ArrayList<>(Arrays.asList(followingsArr));
         this.loader.loadSearchPageForArtists(this.stage, followings, "Your Followings");
@@ -198,7 +198,7 @@ public class MainPageController implements Initializable {
     @FXML
     private void playLists() {
         this.stage = (Stage)this.logout.getScene().getWindow();
-        Response response = this.client.getUserPlaylists();
+        Response response = this.client.getUserPlaylists(this.client.getCurrentUserId());
         PlaylistEntity[] playlistArr = this.mapper.convertValue(response.getData(), PlaylistEntity[].class);
         ArrayList<PlaylistEntity> playlists = new ArrayList<>(Arrays.asList(playlistArr));
         this.loader.loadSearchPageForPlaylists(this.stage, playlists, "Your Playlists");
