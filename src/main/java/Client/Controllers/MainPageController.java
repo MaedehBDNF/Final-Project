@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -61,6 +63,8 @@ public class MainPageController implements Initializable {
     }
 
     public void initialize(URL location, ResourceBundle resources) {
+        this.mapper.registerModule(new JavaTimeModule());
+
         if (this.user.getProfilePicture() != null) {
             try {
                 Image image = new Image(new FileInputStream(this.client.download(this.user.getProfilePicture())));
