@@ -172,7 +172,8 @@ public class Manager implements Runnable {
                 return this.login(loginDto);
             case findOneUser:
                 if (request.getUserId() != this.currentUserId) break;
-                return this.userService.findOne(request.getUserId());
+                FindOneUserDto findOneUserDto = this.mapper.convertValue(request.getData(), FindOneUserDto.class);
+                return this.userService.findOne(findOneUserDto.getUserId());
             case searchUser:
                 if (request.getUserId() != this.currentUserId) break;
                 SearchUserDto searchUserDto = this.mapper.convertValue(request.getData(), SearchUserDto.class);
@@ -186,14 +187,16 @@ public class Manager implements Runnable {
                 return this.findUserLikedAlbums(request.getUserId());
             case getUserFriends:
                 if (request.getUserId() != this.currentUserId) break;
-                return this.userService.getUserFriends(request.getUserId());
+                FindUserFriendsDto findUserFriendsDto = this.mapper.convertValue(request.getData(), FindUserFriendsDto.class);
+                return this.userService.getUserFriends(findUserFriendsDto.getUserId());
             case followArtist:
                 if (request.getUserId() != this.currentUserId) break;
                 FollowArtistDto followArtistDto = this.mapper.convertValue(request.getData(), FollowArtistDto.class);
                 return this.followArtist(request.getUserId(), followArtistDto);
             case getUserFollowings:
                 if (request.getUserId() != this.currentUserId) break;
-                return this.userService.getUserFollowings(request.getUserId());
+                FindUserFollowingsDto findUserFollowingsDto = this.mapper.convertValue(request.getData(), FindUserFollowingsDto.class);
+                return this.userService.getUserFollowings(findUserFollowingsDto.getUserId());
             case logOut:
                 if (request.getUserId() != this.currentUserId) break;
                 return this.logout();
@@ -281,7 +284,8 @@ public class Manager implements Runnable {
                 return this.playlistService.findOne(currentUserId, findOnePlaylistDto.getId());
             case findAllUserPlaylists:
                 if (request.getUserId() != this.currentUserId) break;
-                return this.findAllUserPlaylist();
+                FindUserPlaylistsDto findUserPlaylistsDto = this.mapper.convertValue(request.getData(), FindUserPlaylistsDto.class);
+                return this.findAllUserPlaylist(findUserPlaylistsDto.getUserId());
             case searchPlaylist:
                 SearchRequestDto searchPlaylistDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
                 return this.searchPlaylist(searchPlaylistDto.getValue());
