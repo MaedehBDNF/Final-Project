@@ -126,6 +126,14 @@ public class MainPageController implements Initializable {
         this.stage = (Stage) this.searchText.getScene().getWindow();
         Response response = this.client.completeSearch(this.searchText.getText());
         SearchResponseDto result = this.mapper.convertValue(response.getData(), SearchResponseDto.class);
+        ArrayList<UserEntity> users = result.getUsers();
+        for (UserEntity user: users) {
+            if (user.getId() == this.client.getCurrentUserId()) {
+                users.remove(user);
+                break;
+            }
+        }
+        result.setUsers(users);
         this.loader.loadMainCompleteSearchPage(this.stage, result, "Found Items");
     }
 
@@ -142,9 +150,9 @@ public class MainPageController implements Initializable {
     public void searchArtists() {
         this.stage = (Stage) this.searchText.getScene().getWindow();
         Response response = this.client.searchArtists(this.searchArtistText.getText());
-        ArtistEntity[] followingsArr = this.mapper.convertValue(response.getData(), ArtistEntity[].class);
-        ArrayList<ArtistEntity> followings = new ArrayList<>(Arrays.asList(followingsArr));
-        this.loader.loadSearchPageForArtists(this.stage, followings, "Found Artists");
+        ArtistEntity[] artistsArr = this.mapper.convertValue(response.getData(), ArtistEntity[].class);
+        ArrayList<ArtistEntity> artists = new ArrayList<>(Arrays.asList(artistsArr));
+        this.loader.loadSearchPageForArtists(this.stage, artists, "Found Artists");
     }
 
     @FXML
@@ -169,9 +177,15 @@ public class MainPageController implements Initializable {
     public void searchUsers() {
         this.stage = (Stage) this.searchText.getScene().getWindow();
         Response response = this.client.searchUsers(this.searchUserText.getText());
-        UserEntity[] friendsArr = this.mapper.convertValue(response.getData(), UserEntity[].class);
-        ArrayList<UserEntity> friends = new ArrayList<>(Arrays.asList(friendsArr));
-        this.loader.loadSearchPageForUsers(this.stage, friends, "Found Users");
+        UserEntity[] usersArr = this.mapper.convertValue(response.getData(), UserEntity[].class);
+        ArrayList<UserEntity> users = new ArrayList<>(Arrays.asList(usersArr));
+        for (UserEntity user: users) {
+            if (user.getId() == this.client.getCurrentUserId()) {
+                users.remove(user);
+                break;
+            }
+        }
+        this.loader.loadSearchPageForUsers(this.stage, users, "Found Users");
     }
 
     @FXML
