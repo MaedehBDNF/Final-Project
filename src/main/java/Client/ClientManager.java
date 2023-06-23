@@ -2,6 +2,7 @@ package Client;
 
 import Shared.Cryptography.AESEncryption;
 import Shared.Cryptography.RSAEncryption;
+import Shared.Dto.Album.DoesUserLikedAlbumDto;
 import Shared.Dto.Album.FindOneAlbumDto;
 import Shared.Dto.Album.LikeAlbumDto;
 import Shared.Dto.Artist.FindOneArtistDto;
@@ -10,6 +11,7 @@ import Shared.Dto.File.FileDto;
 import Shared.Dto.File.UploadDto;
 import Shared.Dto.Genre.FindOneGenreDto;
 import Shared.Dto.Music.DislikeMusicDto;
+import Shared.Dto.Music.DoesUserLikedMusicDto;
 import Shared.Dto.Music.FindOneMusicDto;
 import Shared.Dto.Music.LikeMusicDto;
 import Shared.Dto.Playlist.*;
@@ -215,6 +217,78 @@ public class ClientManager {
         Request request = new Request();
         request.setUserId(this.currentUserId);
         request.setTitle(Title.findUserLikedAlbums);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response doesUserLikedMusic(int musicId) {
+        Request request = new Request();
+        request.setUserId(this.currentUserId);
+        request.setTitle(Title.doesUserLikedMusic);
+        DoesUserLikedMusicDto dto = new DoesUserLikedMusicDto();
+        dto.setUserId(this.currentUserId);
+        dto.setMusicId(musicId);
+        request.setData(dto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response doesUserLikedPlaylist(int playlistId) {
+        Request request = new Request();
+        request.setUserId(this.currentUserId);
+        request.setTitle(Title.doesUserLikedPlaylist);
+        DoesUserLikedPlaylistDto dto = new DoesUserLikedPlaylistDto();
+        dto.setUserId(this.currentUserId);
+        dto.setPlaylistId(playlistId);
+        request.setData(dto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response doesUserAddedPlaylist(int playlistId) {
+        Request request = new Request();
+        request.setUserId(this.currentUserId);
+        request.setTitle(Title.doesUserAddedPlaylist);
+        DoesUserAddedPlaylistDto dto = new DoesUserAddedPlaylistDto();
+        dto.setUserId(this.currentUserId);
+        dto.setPlaylistId(playlistId);
+        request.setData(dto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response doesUserFollowedArtist(int artistId) {
+        Request request = new Request();
+        request.setUserId(this.currentUserId);
+        request.setTitle(Title.doesUserFollowedArtist);
+        DoesUserFollowedArtistDto dto = new DoesUserFollowedArtistDto();
+        dto.setUserId(this.currentUserId);
+        dto.setArtistId(artistId);
+        request.setData(dto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response doesUserFollowedUser(int friendId) {
+        Request request = new Request();
+        request.setUserId(this.currentUserId);
+        request.setTitle(Title.doesUserFollowedUser);
+        DoesUserFollowedUserDto dto = new DoesUserFollowedUserDto();
+        dto.setUserId(this.currentUserId);
+        dto.setFriendId(friendId);
+        request.setData(dto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public Response doesUserLikedAlbum(int albumId) {
+        Request request = new Request();
+        request.setUserId(this.currentUserId);
+        request.setTitle(Title.doesUserLikedAlbum);
+        DoesUserLikedAlbumDto dto = new DoesUserLikedAlbumDto();
+        dto.setUserId(this.currentUserId);
+        dto.setAlbumId(albumId);
+        request.setData(dto);
         this.sendReqToServer(request);
         return this.getResFromServer();
     }
