@@ -30,6 +30,7 @@ public class UserPresentationController implements Initializable {
     private ClientManager client;
     private LoadManager loader;
     private final ObjectMapper mapper = new ObjectMapper();
+    private final String projectDirectory = System.getProperty("user.dir");
     private UserEntity user;
     private ArrayList<PlaylistEntity> pls;
 
@@ -78,6 +79,9 @@ public class UserPresentationController implements Initializable {
                 this.playlists.getChildren().add(playlistButton);
             }
         }
+        if (this.doesUserFollowedUser()) {
+            this.addToFriends.setText("added to friends");
+        }
     }
 
     @FXML
@@ -121,4 +125,10 @@ public class UserPresentationController implements Initializable {
     public void setPlaylists(ArrayList<PlaylistEntity> playlists) {
         this.pls = playlists;
     }
+
+    private boolean doesUserFollowedUser() {
+        Response response = this.client.doesUserFollowedUser(this.user.getId());
+        return this.mapper.convertValue(response.getData(), boolean.class);
+    }
+
 }
