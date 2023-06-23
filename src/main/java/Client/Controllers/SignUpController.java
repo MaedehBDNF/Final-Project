@@ -103,8 +103,9 @@ public class SignUpController implements Initializable {
                     } else {
                         user.setProfilePicture(profilePicture);
                     }
+                    this.client.setCurrentUser(user);
 
-                    this.loader.loadMainPage(this.stage, user);
+                    this.loader.loadMainPage(this.stage);
                 }
             }
         } else {

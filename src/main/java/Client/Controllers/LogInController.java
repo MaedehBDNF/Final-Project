@@ -59,8 +59,7 @@ public class LogInController {
             return;
         }
 
-        UserEntity user = this.mapper.convertValue(response.getData(), UserEntity.class);
-        this.loader.loadMainPage(this.stage, user);
+        this.loader.loadMainPage(this.stage);
     }
 
     @FXML

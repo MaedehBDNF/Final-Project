@@ -50,7 +50,7 @@ public class SearchPlaylistController implements Initializable {
     @FXML
     public void back() {
         this.stage = (Stage) this.back.getScene().getWindow();
-        this.loader.loadMainPage(this.stage, this.client.getCurrentUser());
+        this.loader.loadMainPage(this.stage);
     }
 
     public void setClient(ClientManager client) {

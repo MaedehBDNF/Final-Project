@@ -48,11 +48,11 @@ public class LoadManager {
         this.basicLoad(loader);
     }
 
-    public void loadMainPage(Stage stage, UserEntity userEntity) {
+    public void loadMainPage(Stage stage) {
         stage.close();
         MainPageController controller = new MainPageController();
         controller.setClient(this.client);
-        controller.setUser(userEntity);
+        controller.setUser(this.client.getCurrentUser());
         FXMLLoader loader = new FXMLLoader();
         loader.setController(controller);
         loader.setLocation(getClass().getClassLoader().getResource("MainPage.fxml"));
