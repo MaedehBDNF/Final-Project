@@ -4,6 +4,7 @@ import Client.ClientManager;
 import Client.LoadManager;
 import Shared.Dto.Album.FindOneAlbumDto;
 import Shared.Dto.Artist.FindOneArtistDto;
+import Shared.Dto.Playlist.FindOnePlaylistDto;
 import Shared.Dto.Search.SearchResponseDto;
 import Shared.Dto.User.FindOneUserDto;
 import Shared.Entities.*;
@@ -85,7 +86,8 @@ public class MainCompleteSearchController implements Initializable {
                     playlistButton.setPrefHeight(30);
                     playlistButton.setPrefWidth(1000);
                     playlistButton.setOnAction(event -> {
-                        System.out.println(playlistButton.getText());
+                        PlaylistEntity playlist = (PlaylistEntity) playlistButton.getUserData();
+                        this.loader.loadPlaylistPresentationPage(this.fullInfoPlaylist(playlist.getId()));
                     });
                     this.results.getChildren().add(playlistButton);
                 }
@@ -177,5 +179,12 @@ public class MainCompleteSearchController implements Initializable {
         dto.setId(albumId);
         Response response = this.client.findOneAlbum(dto);
         return this.mapper.convertValue(response.getData(), AlbumEntity.class);
+    }
+
+    private PlaylistEntity fullInfoPlaylist(int playlistId) {
+        FindOnePlaylistDto dto = new FindOnePlaylistDto();
+        dto.setId(playlistId);
+        Response response = this.client.findOnePlaylist(dto);
+        return this.mapper.convertValue(response.getData(), PlaylistEntity.class);
     }
 }

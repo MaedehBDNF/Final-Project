@@ -2,7 +2,10 @@ package Client.Controllers;
 
 import Client.ClientManager;
 import Client.LoadManager;
+import Shared.Dto.Playlist.FindOnePlaylistDto;
 import Shared.Entities.PlaylistEntity;
+import Shared.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -17,6 +20,7 @@ import java.util.ResourceBundle;
 public class SearchPlaylistController implements Initializable {
     private ClientManager client;
     private LoadManager loader;
+    private final ObjectMapper mapper = new ObjectMapper();
     private ArrayList<PlaylistEntity> playlists;
     private Stage stage;
     private String title;
@@ -40,7 +44,8 @@ public class SearchPlaylistController implements Initializable {
                 playlistButton.setPrefHeight(30);
                 playlistButton.setPrefWidth(1000);
                 playlistButton.setOnAction(event -> {
-                    System.out.println(playlistButton.getText());
+                    PlaylistEntity playlist = (PlaylistEntity) playlistButton.getUserData();
+                    this.loader.loadPlaylistPresentationPage(this.fullInfoPlaylist(playlist.getId()));
                 });
                 this.results.getChildren().add(playlistButton);
             }
@@ -64,5 +69,12 @@ public class SearchPlaylistController implements Initializable {
 
     public void setPlaylists(ArrayList<PlaylistEntity> playlists) {
         this.playlists = playlists;
+    }
+
+    private PlaylistEntity fullInfoPlaylist(int playlistId) {
+        FindOnePlaylistDto dto = new FindOnePlaylistDto();
+        dto.setId(playlistId);
+        Response response = this.client.findOnePlaylist(dto);
+        return this.mapper.convertValue(response.getData(), PlaylistEntity.class);
     }
 }

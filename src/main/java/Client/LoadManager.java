@@ -207,6 +207,17 @@ public class LoadManager {
         this.basicLoad(loader);
     }
 
+    public void loadPlaylistPresentationPage(PlaylistEntity playlist) {
+        PlaylistPresentationController controller = new PlaylistPresentationController();
+        controller.setClient(this.client);
+        controller.setPlaylist(playlist);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("PlaylistPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+
     // todo: Complete
 
     private void basicLoad(FXMLLoader loader) {

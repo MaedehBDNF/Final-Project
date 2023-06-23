@@ -2,6 +2,7 @@ package Client.Controllers;
 
 import Client.ClientManager;
 import Client.LoadManager;
+import Shared.Dto.Playlist.FindOnePlaylistDto;
 import Shared.Dto.User.FollowUserDto;
 import Shared.Entities.ArtistEntity;
 import Shared.Entities.PlaylistEntity;
@@ -17,7 +18,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -73,8 +73,8 @@ public class UserPresentationController implements Initializable {
                 playlistButton.setPrefHeight(30);
                 playlistButton.setPrefWidth(1000);
                 playlistButton.setOnAction(event -> {
-                    //todo load pls page
-                    System.out.println(playlistButton.getText());
+                    PlaylistEntity playlist = (PlaylistEntity) playlistButton.getUserData();
+                    this.loader.loadPlaylistPresentationPage(this.fullInfoPlaylist(playlist.getId()));
                 });
                 this.playlists.getChildren().add(playlistButton);
             }
@@ -131,4 +131,10 @@ public class UserPresentationController implements Initializable {
         return this.mapper.convertValue(response.getData(), boolean.class);
     }
 
+    private PlaylistEntity fullInfoPlaylist(int playlistId) {
+        FindOnePlaylistDto dto = new FindOnePlaylistDto();
+        dto.setId(playlistId);
+        Response response = this.client.findOnePlaylist(dto);
+        return this.mapper.convertValue(response.getData(), PlaylistEntity.class);
+    }
 }
