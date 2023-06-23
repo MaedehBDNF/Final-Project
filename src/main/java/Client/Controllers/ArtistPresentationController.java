@@ -91,6 +91,10 @@ public class ArtistPresentationController implements Initializable {
                 this.albumsAndTracks.getChildren().add(albumButton);
             }
         }
+
+        if (this.doesUserFollowedArtist()) {
+            this.follow.setText("Followed");
+        }
     }
 
     @FXML
@@ -120,5 +124,10 @@ public class ArtistPresentationController implements Initializable {
             this.sLinks += link;
             this.sLinks += "\n";
         }
+    }
+
+    private boolean doesUserFollowedArtist() {
+        Response response = this.client.doesUserFollowedArtist(this.artist.getId());
+        return this.mapper.convertValue(response.getData(), boolean.class);
     }
 }
