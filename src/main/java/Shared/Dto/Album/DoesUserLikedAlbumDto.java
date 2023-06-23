@@ -1,15 +1,15 @@
 package Shared.Dto.Album;
 
-public class LikeAlbumDto {
-    private int userid;
+public class DoesUserLikedAlbumDto {
+    private int userId;
     private int albumId;
 
-    public int getUserid() {
-        return userid;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserid(int userid) {
-        this.userid = userid;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getAlbumId() {

@@ -30,6 +30,7 @@ public enum Title {
     findAlbumSongs,
     searchAlbum,
     likeAlbum,
+    doesUserLikedAlbum,
     // Music
     findOneMusic,
     searchMusic,

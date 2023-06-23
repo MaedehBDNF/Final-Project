@@ -1,6 +1,7 @@
 package Server.Album;
 
 import Server.Config.DatabaseConfigDto;
+import Shared.Dto.Album.DoesUserLikedAlbumDto;
 import Shared.Entities.AlbumEntity;
 import Shared.Entities.MusicEntity;
 import Shared.Dto.Album.CreatorAlbumDto;
@@ -47,8 +48,27 @@ public class AlbumService {
         return this.albumRepository.search(str);
     }
 
-    public boolean likeAlbum(LikeAlbumDto likeAlbumDto) {
-        return this.albumRepository.increasePopularity(likeAlbumDto.getAlbumId()) && this.albumRepository.addToUserLikedAlbums(likeAlbumDto);
+    public Response doesUserLikedAlbum(DoesUserLikedAlbumDto dto) {
+        Response response = new Response();
+        response.setTitle(Title.doesUserLikedAlbum);
+        response.setData(this.albumRepository.doesUserLikedAlbum(dto.getUserId(), dto.getAlbumId()));
+        response.successful();
+        return response;
+    }
+
+    public Response likeAlbum(LikeAlbumDto dto) {
+        Response response = new Response();
+        response.setTitle(Title.likeAlbum);
+        if (this.albumRepository.doesUserLikedAlbum(dto.getUserid(), dto.getAlbumId())) {
+            response.setError(Error.duplicateDataError);
+            return response;
+        }
+        if (!(this.albumRepository.increasePopularity(dto.getAlbumId()) && this.albumRepository.addToUserLikedAlbums(dto))){
+            response.setError(Error.databaseError);
+            return response;
+        }
+        response.successful();
+        return response;
     }
 
     public void close() {

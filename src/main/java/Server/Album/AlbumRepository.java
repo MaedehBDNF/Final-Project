@@ -191,6 +191,24 @@ public class AlbumRepository {
         return albums;
     }
 
+    public boolean doesUserLikedAlbum(int userId, int albumId) {
+        String query = "SELECT * " +
+                "FROM \"userAlbums\" " +
+                "WHERE \"userId\" = ? AND \"albumId\" = ? ";
+        try {
+            PreparedStatement selectStatement = this.connection.prepareStatement(query);
+            selectStatement.setInt(1, userId);
+            selectStatement.setInt(2, albumId);
+            ResultSet rs = selectStatement.executeQuery();
+            if (rs.next()){
+                return true;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean increasePopularity(int id){
         String query = "UPDATE \"album\" SET popularity = popularity + 1 WHERE id = ?;";
         try {

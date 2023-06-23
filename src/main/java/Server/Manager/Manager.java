@@ -243,6 +243,10 @@ public class Manager implements Runnable {
                 if (request.getUserId() != this.currentUserId) break;
                 LikeAlbumDto likeAlbumDto = this.mapper.convertValue(request.getData(), LikeAlbumDto.class);
                 return this.likeAlbum(likeAlbumDto);
+            case doesUserLikedAlbum:
+                if (request.getUserId() != this.currentUserId) break;
+                DoesUserLikedAlbumDto doesUserLikedAlbumDto = this.mapper.convertValue(request.getData(), DoesUserLikedAlbumDto.class);
+                return this.albumService.doesUserLikedAlbum(doesUserLikedAlbumDto);
 
             // Artist Manager
             case findOneArtist:
@@ -476,14 +480,7 @@ public class Manager implements Runnable {
     }
 
     private Response likeAlbum(LikeAlbumDto likeAlbumDto) {
-        Response response = new Response();
-        response.setTitle(Title.likeAlbum);
-        if (!this.albumService.likeAlbum(likeAlbumDto)){
-            response.setError(Error.databaseError);
-            return response;
-        }
-        response.successful();
-        return response;
+        return this.albumService.likeAlbum(likeAlbumDto);
     }
 
     private Response findAllUserPlaylist(int userId) {
