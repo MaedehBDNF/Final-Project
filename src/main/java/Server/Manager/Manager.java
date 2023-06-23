@@ -310,6 +310,14 @@ public class Manager implements Runnable {
                 if (request.getUserId() != this.currentUserId) break;
                 UpdateMusicTurnDto updateMusicTurnDto = this.mapper.convertValue(request.getData(), UpdateMusicTurnDto.class);
                 return this.changeMusicOrderInPlaylist(updateMusicTurnDto);
+            case doesUserLikedPlaylist:
+                if (request.getUserId() != this.currentUserId) break;
+                DoesUserLikedPlaylistDto doesUserLikedPlaylistDto = this.mapper.convertValue(request.getData(), DoesUserLikedPlaylistDto.class);
+                return this.playlistService.doesUserLikedPlaylist(doesUserLikedPlaylistDto);
+            case doesUserAddedPlaylist:
+                if (request.getUserId() != this.currentUserId) break;
+                DoesUserAddedPlaylistDto doesUSerAddedPlaylistDto = this.mapper.convertValue(request.getData(), DoesUserAddedPlaylistDto.class);
+                return this.playlistService.doesUserAddedPlaylist(doesUSerAddedPlaylistDto);
 
             // All
             case completeSearch:
@@ -392,7 +400,7 @@ public class Manager implements Runnable {
                 }
                 response = this.fileService.uploadFile(uploadDto);
                 if (response.getStatus() == Status.failed) return response;
-                if (!this.playlistService.updatePlayerCover(uploadDto.getReferenceId(), ((FileEntity) response.getData()).getId())) {
+                if (!this.playlistService.updatePlayerCover(uploadDto.getReferenceId(), ((FileDto) response.getData()).getId())) {
                     response.setStatus(Status.failed);
                     response.setData(null);
                 }
@@ -550,18 +558,7 @@ public class Manager implements Runnable {
     }
 
     private Response likePlaylist(LikePlaylistDto likePlaylistDto) {
-        Response response = new Response();
-        response.setTitle(Title.likePlayList);
-        AddPlaylistDto addPlaylistDto = new AddPlaylistDto();
-        addPlaylistDto.setId(likePlaylistDto.getId());
-        addPlaylistDto.setUserId(this.currentUserId);
-        if (this.playlistService.likePlaylist(addPlaylistDto)){
-            response.successful();
-            return response;
-        } else {
-            response.setError(Error.databaseError);
-            return response;
-        }
+        return this.playlistService.likePlaylist(likePlaylistDto.getId(), this.currentUserId);
     }
 
     private Response addMusicToPlaylist(AddMusicToPlaylistDto addMusicToPlaylistDto) {

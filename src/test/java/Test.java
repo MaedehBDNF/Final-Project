@@ -487,7 +487,7 @@ public class Test {
         request.setTitle(Title.changeMusicOrderInPlaylist);
         UpdateMusicTurnDto musicTurnDto = new UpdateMusicTurnDto();
         musicTurnDto.setMusicId(musicId);
-        musicTurnDto.setId(playlistId);
+        musicTurnDto.setPlaylistId(playlistId);
         musicTurnDto.setTurn(newOrder);
         request.setData(musicTurnDto);
         sendReqToServer(request);

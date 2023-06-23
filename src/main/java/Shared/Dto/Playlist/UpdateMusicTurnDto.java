@@ -1,16 +1,16 @@
 package Shared.Dto.Playlist;
 
 public class UpdateMusicTurnDto {
-    private int id;
+    private int playlistId;
     private int musicId;
     private double turn;
 
-    public int getId() {
-        return id;
+    public int getPlaylistId() {
+        return playlistId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPlaylistId(int playlistId) {
+        this.playlistId = playlistId;
     }
 
     public int getMusicId() {

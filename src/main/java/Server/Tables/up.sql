@@ -86,7 +86,8 @@ CREATE TABLE IF NOT EXISTS "musicComments" (
 
 CREATE TABLE IF NOT EXISTS "userPlaylists" (
     "userId"        INT REFERENCES "user" (id) ON DELETE CASCADE NOT NULL,
-    "playlistId"    INT REFERENCES "playlist" (id) ON DELETE CASCADE NOT NULL
+    "playlistId"    INT REFERENCES "playlist" (id) ON DELETE CASCADE NOT NULL,
+    "isLiked"       BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS "userAlbums" (

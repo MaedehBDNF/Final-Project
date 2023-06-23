@@ -12,7 +12,7 @@ public class PlaylistEntity {
     private boolean privatePL = false;
     private FileDto cover;
     private boolean isLock = false;
-    private ArrayList<MusicEntity> tracks;
+    private ArrayList<MusicPlaylistEntity> tracks;
 
     public int getId() {
         return id;
@@ -78,11 +78,11 @@ public class PlaylistEntity {
         isLock = lock;
     }
 
-    public ArrayList<MusicEntity> getTracks() {
+    public ArrayList<MusicPlaylistEntity> getTracks() {
         return tracks;
     }
 
-    public void setTracks(ArrayList<MusicEntity> tracks) {
+    public void setTracks(ArrayList<MusicPlaylistEntity> tracks) {
         this.tracks = tracks;
     }
 

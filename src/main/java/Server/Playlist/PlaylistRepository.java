@@ -2,7 +2,7 @@ package Server.Playlist;
 
 import Server.Config.DatabaseConfigDto;
 import Shared.Dto.Playlist.*;
-import Shared.Entities.MusicEntity;
+import Shared.Entities.MusicPlaylistEntity;
 import Shared.Entities.PlaylistEntity;
 import Shared.Entities.UserEntity;
 import Shared.Dto.File.FileDto;
@@ -35,46 +35,23 @@ public class PlaylistRepository {
     public PlaylistEntity insertIntoTable(CreatePlaylistDto createPlaylistDto, boolean isLock) {
         PlaylistEntity playlistEntity = new PlaylistEntity();
         PreparedStatement insertStatement;
-        String query;
-        if (createPlaylistDto.getCoverId() != 0) {
-            query = "INSERT INTO \"playlist\" (title, \"creatorId\", description, popularity, \"isPrivate\", \"coverId\", \"isLock\") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id;";
-            try {
-                insertStatement = this.connection.prepareStatement(query);
-                insertStatement.setString(1, createPlaylistDto.getTitle());
-                insertStatement.setInt(2, createPlaylistDto.getCreatorId());
-                insertStatement.setString(3, createPlaylistDto.getDescription());
-                insertStatement.setInt(4, createPlaylistDto.getPopularity());
-                insertStatement.setBoolean(5, createPlaylistDto.isPrivatePL());
-                insertStatement.setInt(6, createPlaylistDto.getCoverId());
-                insertStatement.setBoolean(7, isLock);
-                insertStatement.execute();
-                ResultSet rs = insertStatement.getResultSet();
-                if (rs.next()){
-                    playlistEntity.setId(rs.getInt("id"));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+        String query = "INSERT INTO \"playlist\" (title, \"creatorId\", description, popularity, \"isPrivate\", \"isLock\") VALUES (?, ?, ?, ?, ?, ?) RETURNING id;";
+        try {
+            insertStatement = this.connection.prepareStatement(query);
+            insertStatement.setString(1, createPlaylistDto.getTitle());
+            insertStatement.setInt(2, createPlaylistDto.getCreatorId());
+            insertStatement.setString(3, createPlaylistDto.getDescription());
+            insertStatement.setInt(4, createPlaylistDto.getPopularity());
+            insertStatement.setBoolean(5, createPlaylistDto.isPrivatePL());
+            insertStatement.setBoolean(6, isLock);
+            insertStatement.execute();
+            ResultSet rs = insertStatement.getResultSet();
+            if (rs.next()){
+                playlistEntity.setId(rs.getInt("id"));
             }
-        } else {
-            query = "INSERT INTO \"playlist\" (title, \"creatorId\", description, popularity, \"isPrivate\", \"isLock\") VALUES (?, ?, ?, ?, ?, ?) RETURNING id;";
-            try {
-                insertStatement = this.connection.prepareStatement(query);
-                insertStatement.setString(1, createPlaylistDto.getTitle());
-                insertStatement.setInt(2, createPlaylistDto.getCreatorId());
-                insertStatement.setString(3, createPlaylistDto.getDescription());
-                insertStatement.setInt(4, createPlaylistDto.getPopularity());
-                insertStatement.setBoolean(5, createPlaylistDto.isPrivatePL());
-                insertStatement.setBoolean(6, isLock);
-                insertStatement.execute();
-                ResultSet rs = insertStatement.getResultSet();
-                if (rs.next()){
-                    playlistEntity.setId(rs.getInt("id"));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
         return playlistEntity;
     }
 
@@ -82,37 +59,41 @@ public class PlaylistRepository {
         PlaylistEntity playlistEntity = new PlaylistEntity();
         String query = "SELECT " +
                 "\"playlist\".id As \"playlistId\", " +
-                "title, " +
+                "\"playlist\".title AS \"playlistTitle\", " +
                 "\"creatorId\", " +
                 "description, " +
-                "popularity, " +
+                "\"playlist\".popularity AS \"playlistPopularity\", " +
                 "\"isPrivate\", " +
                 "\"isLock\", " +
                 "\"playlistTrack\".\"musicId\", " +
+                "\"music\".title AS \"musicTitle\", " +
+                "\"music\".popularity AS \"musicPopularity\", " +
+                "\"playlistTrack\".turn, " +
                 "\"file\".id AS \"coverId\", " +
                 "\"file\".name AS \"coverName\", " +
                 "\"file\".\"memeType\" AS \"coverMemeType\" " +
                 "FROM \"playlist\" " +
-                "LEFT JOIN \"playlistTrack\" ON \"playlistTrack\".\"playlistId\" = \"playlist\".id" +
+                "LEFT JOIN \"playlistTrack\" ON \"playlistTrack\".\"playlistId\" = \"playlist\".id " +
                 "LEFT JOIN \"file\" ON \"playlist\".\"coverId\" = \"file\".id " +
+                "LEFT JOIN \"music\" ON \"playlistTrack\".\"musicId\" = \"music\".id " +
                 "WHERE \"playlist\".id = ? " +
-                "ORDER BY \"playlistTrack\".turn DESC;";
+                "ORDER BY \"playlistTrack\".turn ASC;";
         try {
             PreparedStatement selectStatement = this.connection.prepareStatement(query);
             selectStatement.setInt(1, id);
             ResultSet rs = selectStatement.executeQuery();
             UserEntity creator = new UserEntity();
             FileDto cover = new FileDto();
-            ArrayList<MusicEntity> tracks = new ArrayList<>();
+            ArrayList<MusicPlaylistEntity> tracks = new ArrayList<>();
             ArrayList<Integer> trackIds = new ArrayList<>();
             while (rs.next()){
                 if (playlistEntity.getId() == 0){
                     playlistEntity.setId(rs.getInt("playlistId"));
-                    playlistEntity.setTitle(rs.getString("title"));
+                    playlistEntity.setTitle(rs.getString("playlistTitle"));
                     creator.setId(rs.getInt("creatorId"));
                     playlistEntity.setCreator(creator);
                     playlistEntity.setDescription(rs.getString("description"));
-                    playlistEntity.setPopularity(rs.getInt("popularity"));
+                    playlistEntity.setPopularity(rs.getInt("playlistPopularity"));
                     playlistEntity.setPrivatePL(rs.getBoolean("isPrivate"));
                     cover.setId(rs.getInt("coverId"));
                     cover.setName(rs.getString("coverName"));
@@ -121,10 +102,13 @@ public class PlaylistRepository {
                     playlistEntity.setCover(cover);
                 }
                 int trackId = rs.getInt("musicId");
-                if (trackIds.contains(trackId)) continue;
+                if (trackIds.contains(trackId) || trackId == 0) continue;
                 trackIds.add(trackId);
-                MusicEntity track = new MusicEntity();
+                MusicPlaylistEntity track = new MusicPlaylistEntity();
                 track.setId(rs.getInt("musicId"));
+                track.setTitle(rs.getString("musicTitle"));
+                track.setPopularity(rs.getInt("musicPopularity"));
+                track.setTurn(rs.getDouble("turn"));
                 tracks.add(track);
             }
             playlistEntity.setTracks(tracks);
@@ -162,32 +146,6 @@ public class PlaylistRepository {
             e.printStackTrace();
         }
         return playlists;
-    }
-
-    public PlaylistEntity findUserPlaylists(int userId, int playlistId){
-        String query = "SELECT " +
-                "\"playlist\".id, " +
-                "\"playlist\".title, " +
-                "\"playlist\".popularity " +
-                "FROM \"userPlaylists\" " +
-                "LEFT JOIN \"playlist\" ON \"userPlaylists\".\"playlistId\" = \"playlist\".id " +
-                "WHERE \"userPlaylists\".\"userId\" = ? AND \"userPlaylists\".\"playlistId\" = ?;";
-        try {
-            PreparedStatement selectStatement = this.connection.prepareStatement(query);
-            selectStatement.setInt(1, userId);
-            selectStatement.setInt(2, playlistId);
-            ResultSet rs = selectStatement.executeQuery();
-            if (rs.next()){
-                PlaylistEntity playlist = new PlaylistEntity();
-                playlist.setId(rs.getInt("id"));
-                playlist.setTitle(rs.getString("title"));
-                playlist.setPopularity(rs.getInt("popularity"));
-                return playlist;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return new PlaylistEntity();
     }
 
     public ArrayList<PlaylistEntity> findUserPublicPlaylists(int userId) {
@@ -315,12 +273,12 @@ public class PlaylistRepository {
         return playlist;
     }
 
-    public boolean findMusicPlaylist(int playlistId, int musicId) {
-        String query = "SELECT * FROM \"playlistTrack\" WHERE \"playlistId\" = ? AND \"musicId\" = ?;";
+    public boolean hasPlaylistBeenLiked(int userId, int playlistId) {
+        String query = "SELECT * FROM \"userPlaylists\" WHERE \"userId\" = ? AND \"playlistId\" = ? AND \"isLiked\";";
         try {
             PreparedStatement selectStatement = this.connection.prepareStatement(query);
-            selectStatement.setInt(1, playlistId);
-            selectStatement.setInt(2, musicId);
+            selectStatement.setInt(1, userId);
+            selectStatement.setInt(2, playlistId);
             selectStatement.execute();
             ResultSet rs = selectStatement.getResultSet();
             if (rs.next()){
@@ -331,6 +289,38 @@ public class PlaylistRepository {
         }
         return false;
     }
+
+    public boolean hasPlaylistBeenAdded(int userId, int playlistId) {
+        String query = "SELECT * FROM \"userPlaylists\" WHERE \"userId\" = ? AND \"playlistId\" = ?;";
+        try {
+            PreparedStatement selectStatement = this.connection.prepareStatement(query);
+            selectStatement.setInt(1, userId);
+            selectStatement.setInt(2, playlistId);
+            selectStatement.execute();
+            ResultSet rs = selectStatement.getResultSet();
+            if (rs.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean likePlaylist(int userId, int playlistId) {
+        String query = "UPDATE \"userPlaylists\" SET \"isLiked\" = TRUE WHERE \"playlistId\" = ? AND \"userId\" = ?;";
+        try {
+            PreparedStatement updateStatement = this.connection.prepareStatement(query);
+            updateStatement.setInt(1, playlistId);
+            updateStatement.setInt(2, userId);
+            updateStatement.execute();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     public boolean removeMusic(RemoveMusicFromPlaylistDto removeMusicDto) {
         String query = "DELETE FROM \"playlistTrack\" WHERE \"playlistId\" = ? AND \"musicId\" = ?;";
@@ -351,7 +341,7 @@ public class PlaylistRepository {
         try {
             PreparedStatement updateStatement = this.connection.prepareStatement(query);
             updateStatement.setDouble(1, updateMusicTurnDto.getTurn());
-            updateStatement.setInt(2, updateMusicTurnDto.getId());
+            updateStatement.setInt(2, updateMusicTurnDto.getPlaylistId());
             updateStatement.setInt(3, updateMusicTurnDto.getMusicId());
             updateStatement.execute();
             return true;

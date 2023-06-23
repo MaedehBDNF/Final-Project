@@ -27,6 +27,22 @@ public class PlaylistService {
         return this.playlistRepository.insertIntoTable(createPlaylistDto, true);
     }
 
+    public Response doesUserLikedPlaylist(DoesUserLikedPlaylistDto dto) {
+        Response response = new Response();
+        response.setTitle(Title.doesUserLikedPlaylist);
+        response.setData(this.playlistRepository.hasPlaylistBeenLiked(dto.getUserId(), dto.getPlaylistId()));
+        response.successful();
+        return response;
+    }
+
+    public Response doesUserAddedPlaylist(DoesUserAddedPlaylistDto dto) {
+        Response response = new Response();
+        response.setTitle(Title.doesUserAddedPlaylist);
+        response.setData(this.playlistRepository.hasPlaylistBeenAdded(dto.getUserId(), dto.getPlaylistId()));
+        response.successful();
+        return response;
+    }
+
     public Response findOne(int userId, int id){
         Response response = new Response();
         response.setTitle(Title.findOnePlaylist);
@@ -62,48 +78,55 @@ public class PlaylistService {
         return this.playlistRepository.findUserPublicPlaylists(userId);
     }
 
-    private PlaylistEntity findUserPlaylists(int userId, int playlist) {
-        return this.playlistRepository.findUserPlaylists(userId, playlist);
-    }
-
     public ArrayList<PlaylistEntity> search(String str, int userId) {
         return this.playlistRepository.search(str, userId);
     }
 
-    public Response addToUserPlaylists(AddPlaylistDto addPlaylistDto) {
+    public Response addToUserPlaylists(AddPlaylistDto dto) {
         Response response = new Response();
         response.setTitle(Title.addPlaylist);
-        PlaylistEntity playlist = this.findOneEntity(addPlaylistDto.getId());
-        if (playlist.isPrivatePL()) {
-            if (playlist.getCreator().getId() == addPlaylistDto.getUserId()) {
-                PlaylistEntity playlistEntity = this.findUserPlaylists(addPlaylistDto.getUserId(), addPlaylistDto.getId());
-                if (playlistEntity.getId() != 0) {
-                    response.setError(Error.duplicateDataError);
-                    return response;
-                }
-                this.playlistRepository.addToUserPlaylists(addPlaylistDto);
-                response.setData(playlist);
-                response.successful();
-                return response;
-            } else {
-                response.setError(Error.forbidden);
+        PlaylistEntity playlist = this.findOneEntity(dto.getId());
+        if (playlist.isPrivatePL() && playlist.getCreator().getId() != dto.getUserId()) {
+            response.setError(Error.forbidden);
+            return response;
+        } else {
+            if (this.playlistRepository.hasPlaylistBeenAdded(dto.getUserId(), dto.getId())) {
+                response.setError(Error.duplicateDataError);
                 return response;
             }
-        } else {
-            this.playlistRepository.addToUserPlaylists(addPlaylistDto);
+            if (!this.playlistRepository.addToUserPlaylists(dto)) {
+                response.setError(Error.databaseError);
+                return response;
+            }
             response.successful();
             return response;
         }
     }
 
-    public boolean likePlaylist(AddPlaylistDto addPlaylistDto) {
-        PlaylistEntity playlistEntity = this.findUserPlaylists(addPlaylistDto.getUserId(), addPlaylistDto.getId());
-        boolean result = true;
-        if (playlistEntity.getId() == 0) {
-            result = this.playlistRepository.addToUserPlaylists(addPlaylistDto);
+    public Response likePlaylist(int playlistId, int userId) {
+        Response response = new Response();
+        response.setTitle(Title.likePlayList);
+        if (this.playlistRepository.hasPlaylistBeenLiked(userId, playlistId)) {
+            response.setError(Error.duplicateDataError);
+            return response;
         }
-        return result && this.playlistRepository.increasePopularity(addPlaylistDto.getId());
-    }
+        if (!this.playlistRepository.hasPlaylistBeenAdded(userId, playlistId)) {
+            AddPlaylistDto addPlaylistDto = new AddPlaylistDto();
+            addPlaylistDto.setId(playlistId);
+            addPlaylistDto.setUserId(userId);
+            if (!this.playlistRepository.addToUserPlaylists(addPlaylistDto)) {
+                response.setError(Error.databaseError);
+                return response;
+            }
+        }
+        if (this.playlistRepository.likePlaylist(userId, playlistId) && this.playlistRepository.increasePopularity(playlistId)) {
+            response.successful();
+            return response;
+        } else {
+            response.setError(Error.databaseError);
+            return response;
+        }
+   }
 
     private double makeTurn(int playlistId) {
         double turn = this.playlistRepository.findLastRowTurn(playlistId);
@@ -114,9 +137,6 @@ public class PlaylistService {
     public PlaylistEntity addMusic(AddMusicToPlaylistDto addMusicToPlaylistDto, int userId, boolean isLock) {
         PlaylistEntity pl = this.findOneEntity(addMusicToPlaylistDto.getId());
         if (pl.getCreator().getId() != userId || (pl.isLock() && !isLock)) {
-            return new PlaylistEntity();
-        }
-        if (this.playlistRepository.findMusicPlaylist(addMusicToPlaylistDto.getId(), addMusicToPlaylistDto.getMusicId())) {
             return new PlaylistEntity();
         }
         double turn = this.makeTurn(addMusicToPlaylistDto.getId());

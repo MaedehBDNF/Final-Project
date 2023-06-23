@@ -46,6 +46,8 @@ public enum Title {
     addMusicToPlaylist,
     removeMusicFromPlaylist,
     changeMusicOrderInPlaylist,
+    doesUserLikedPlaylist,
+    doesUserAddedPlaylist,
     // All
     completeSearch,
     // Exit
