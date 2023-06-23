@@ -146,6 +146,7 @@ public class LoadManager {
     public void loadCreateNewPlaylistPage(Stage stage) {
         stage.close();
         CreateNewPlaylistController controller = new CreateNewPlaylistController();
+        controller.setClient(this.client);
         FXMLLoader loader = new FXMLLoader();
         loader.setController(controller);
         loader.setLocation(getClass().getClassLoader().getResource("CreateNewPlaylist.fxml"));
