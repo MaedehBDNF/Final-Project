@@ -78,6 +78,14 @@ public class AlbumPresentationController implements Initializable {
                 this.musics.getChildren().add(musicButton);
             }
         }
+        if (this.doesUserLikedAlbum()) {
+            try {
+                Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\likeRed.png"));
+                this.likeImage.setImage(image);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
@@ -94,7 +102,6 @@ public class AlbumPresentationController implements Initializable {
                 e.printStackTrace();
             }
         } else {
-            this.message.setText("Sorry!");
             this.message.setVisible(true);
         }
     }
@@ -122,5 +129,10 @@ public class AlbumPresentationController implements Initializable {
         dto.setId(albumId);
         Response response = this.client.findOneAlbum(dto);
         return this.mapper.convertValue(response.getData(), AlbumEntity.class);
+    }
+
+    private boolean doesUserLikedAlbum() {
+        Response response = this.client.doesUserLikedAlbum(this.album.getId());
+        return this.mapper.convertValue(response.getData(), boolean.class);
     }
 }
