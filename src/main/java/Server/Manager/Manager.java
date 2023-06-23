@@ -3,15 +3,14 @@ package Server.Manager;
 import Server.Album.AlbumService;
 import Server.Artist.ArtistService;
 import Server.Config.DatabaseConfigDto;
+import Shared.Dto.Album.DoesUserLikedAlbumDto;
 import Shared.Dto.Music.DislikeMusicDto;
-import Shared.Entities.FileEntity;
+import Shared.Dto.Music.DoesUserLikedMusicDto;
+import Shared.Entities.*;
 import Server.FileManager.FileService;
 import Server.Genre.GenreService;
-import Shared.Entities.CommentEntity;
 import Server.Music.MusicService;
-import Shared.Entities.PlaylistEntity;
 import Server.Playlist.PlaylistService;
-import Shared.Entities.UserEntity;
 import Server.User.UserService;
 import Shared.Cryptography.AESEncryption;
 import Shared.Cryptography.RSAEncryption;
@@ -35,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Manager implements Runnable {
     private int currentUserId = -1;
@@ -196,6 +196,14 @@ public class Manager implements Runnable {
                 if (request.getUserId() != this.currentUserId) break;
                 FindUserFollowingsDto findUserFollowingsDto = this.mapper.convertValue(request.getData(), FindUserFollowingsDto.class);
                 return this.userService.getUserFollowings(findUserFollowingsDto.getUserId());
+            case doesUserFollowedArtist:
+                if (request.getUserId() != this.currentUserId) break;
+                DoesUserFollowedArtistDto doesUserFollowedArtistDto = this.mapper.convertValue(request.getData(), DoesUserFollowedArtistDto.class);
+                return this.userService.doesUserFollowedArtist(doesUserFollowedArtistDto);
+            case doesUserFollowedUser:
+                if (request.getUserId() != this.currentUserId) break;
+                DoesUserFollowedUserDto doesUserFollowedUserDto = this.mapper.convertValue(request.getData(), DoesUserFollowedUserDto.class);
+                return this.userService.doesUserFollowedUser(doesUserFollowedUserDto);
             case logOut:
                 if (request.getUserId() != this.currentUserId) break;
                 return this.logout();
@@ -342,20 +350,7 @@ public class Manager implements Runnable {
     }
 
     private Response followUser(int userId, FollowUserDto dto) {
-        Response response = new Response();
-        response.setTitle(Title.followUser);
-        if (this.userService.findOneEntity(userId).getId() == 0 ||
-                this.userService.findOneEntity(dto.getFriendId()).getId() == 0
-        ) {
-            response.setError(Error.notFound);
-            return response;
-        }
-        if (!this.userService.followUser(userId, dto.getFriendId())) {
-            response.setError(Error.databaseError);
-            return response;
-        }
-        response.successful();
-        return response;
+        return this.userService.followUser(userId, dto.getFriendId());
     }
 
     private Response followArtist(int userId, FollowArtistDto dto) {
@@ -367,8 +362,8 @@ public class Manager implements Runnable {
             response.setError(Error.notFound);
             return response;
         }
-        if (!this.userService.followArtist(userId, dto.getArtistId())) {
-            response.setError(Error.databaseError);
+        response.setError(this.userService.followArtist(userId, dto.getArtistId()));
+        if (!response.getError().equals(Error.none)) {
             return response;
         }
         response.successful();

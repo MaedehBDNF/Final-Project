@@ -72,12 +72,33 @@ public class UserService {
         return response;
     }
 
-    public boolean followUser(int userId, int friendId) {
-        return this.userRepository.followUser(userId, friendId);
+    public Response followUser(int userId, int friendId) {
+        Response response = new Response();
+        response.setTitle(Title.followUser);
+        if (this.findOneEntity(userId).getId() == 0 || this.findOneEntity(friendId).getId() == 0) {
+            response.setError(Error.notFound);
+            return response;
+        }
+        if (this.userRepository.doesUserFollowedUser(userId, friendId)) {
+            response.setData(Error.duplicateDataError);
+            return response;
+        }
+        if (!this.userRepository.followUser(userId, friendId)) {
+            response.setError(Error.databaseError);
+            return response;
+        }
+        response.successful();
+        return response;
     }
 
-    public boolean followArtist(int userId, int artistId) {
-        return this.userRepository.followArtist(userId, artistId);
+    public Error followArtist(int userId, int artistId) {
+        if (this.userRepository.doesUserFollowedArtist(userId, artistId)) {
+            return Error.duplicateDataError;
+        }
+        if (this.userRepository.followArtist(userId, artistId)) {
+            return Error.none;
+        }
+        return Error.databaseError;
     }
 
     public Response getUserFollowings(int userId) {
@@ -123,6 +144,22 @@ public class UserService {
 
     public ArrayList<AlbumEntity> findUserLikedAlbums(int userId) {
         return this.userRepository.findUserLikedAlbums(userId);
+    }
+
+    public Response doesUserFollowedArtist(DoesUserFollowedArtistDto dto) {
+        Response response = new Response();
+        response.setTitle(Title.doesUserFollowedArtist);
+        response.setData(this.userRepository.doesUserFollowedArtist(dto.getUserId(), dto.getArtistId()));
+        response.successful();
+        return response;
+    }
+
+    public Response doesUserFollowedUser(DoesUserFollowedUserDto dto) {
+        Response response = new Response();
+        response.setTitle(Title.doesUserFollowedUser);
+        response.setData(this.userRepository.doesUserFollowedUser(dto.getUserId(), dto.getFriendId()));
+        response.successful();
+        return response;
     }
 
     public ArrayList<UserEntity> searchUser(String username) {

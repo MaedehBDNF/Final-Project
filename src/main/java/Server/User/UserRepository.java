@@ -199,6 +199,39 @@ public class UserRepository {
         return false;
     }
 
+
+    public boolean doesUserFollowedArtist(int userId, int artistId) {
+        String query = "SELECT * FROM \"following\" WHERE \"userId\" = ? AND \"artistId\" = ?;";
+        try {
+            PreparedStatement selectStatement = this.connection.prepareStatement(query);
+            selectStatement.setInt(1, userId);
+            selectStatement.setInt(2, artistId);
+            ResultSet rs = selectStatement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean doesUserFollowedUser(int userId, int friendId) {
+        String query = "SELECT * FROM \"friend\" WHERE \"userId\" = ? AND \"friendId\" = ?;";
+        try {
+            PreparedStatement selectStatement = this.connection.prepareStatement(query);
+            selectStatement.setInt(1, userId);
+            selectStatement.setInt(2, friendId);
+            ResultSet rs = selectStatement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public ArrayList<AlbumEntity> findUserLikedAlbums(int userId){
         ArrayList<AlbumEntity> albums = new ArrayList<>();
         ArrayList<Integer> albumIds = new ArrayList<>();

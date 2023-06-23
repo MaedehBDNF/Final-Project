@@ -12,6 +12,8 @@ public enum Title {
     findUserLikedAlbums,
     getUserFriends,
     getUserFollowings,
+    doesUserFollowedArtist,
+    doesUserFollowedUser,
     // File
     upload,
     getFileInfo,
