@@ -36,6 +36,7 @@ public enum Title {
     searchMusic,
     likeMusic,
     dislikeMusic,
+    doesUserLikedMusic,
     addCommentOnMusic,
     // Playlist
     createPlaylist,

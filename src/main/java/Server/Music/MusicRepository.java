@@ -220,6 +220,23 @@ public class MusicRepository {
         return false;
     }
 
+    public boolean doesMusicBelongsToPL(int playlistId, int musicId) {
+        String query = "SELECT * FROM \"playlistTrack\" WHERE \"playlistId\" = ? AND \"musicID\" = ?;";
+        try {
+            PreparedStatement selectStatement = this.connection.prepareStatement(query);
+            selectStatement.setInt(1, playlistId);
+            selectStatement.setInt(2, musicId);
+            selectStatement.execute();
+            ResultSet rs = selectStatement.getResultSet();
+            if (rs.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void closeConnection() {
         try {
             this.connection.close();

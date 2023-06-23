@@ -55,6 +55,18 @@ public class MusicService {
         return response;
     }
 
+    public boolean doesMusicBelongsToPL(int playlistId, int musicId) {
+        return this.musicRepository.doesMusicBelongsToPL(playlistId, musicId);
+    }
+
+    public Response doesUserLikedMusic(int playlistId, int musicId) {
+        Response response = new Response();
+        response.setTitle(Title.doesUserLikedMusic);
+        response.setData(this.doesMusicBelongsToPL(playlistId, musicId));
+        response.successful();
+        return response;
+    }
+
     public boolean likeMusic(int id){
         return this.musicRepository.likeMusic(id);
     }

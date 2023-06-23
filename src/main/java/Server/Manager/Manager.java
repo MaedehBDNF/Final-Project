@@ -278,6 +278,11 @@ public class Manager implements Runnable {
             case searchMusic:
                 SearchRequestDto searchMusicDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
                 return this.searchMusic(searchMusicDto.getValue());
+            case doesUserLikedMusic:
+                if (request.getUserId() != this.currentUserId) break;
+                DoesUserLikedMusicDto doesUserLikedMusicDto = this.mapper.convertValue(request.getData(), DoesUserLikedMusicDto.class);
+                int userLikedMusicPL = this.playlistService.getLikedMusicsPlaylist(doesUserLikedMusicDto.getUserId());
+                return this.musicService.doesUserLikedMusic(userLikedMusicPL, doesUserLikedMusicDto.getMusicId());
 
             // Playlist Manager
             case createPlaylist:
@@ -514,8 +519,13 @@ public class Manager implements Runnable {
     private Response likeMusic(int userId, int musicId) {
         Response response = new Response();
         response.setTitle(Title.likeMusic);
+        int userLikedMusicPL = this.playlistService.getLikedMusicsPlaylist(userId);
+        if (this.musicService.doesMusicBelongsToPL(userLikedMusicPL, musicId)) {
+            response.setError(Error.duplicateDataError);
+            return response;
+        }
         AddMusicToPlaylistDto addDto = new AddMusicToPlaylistDto();
-        addDto.setId(this.playlistService.getLikedMusicsPlaylist(userId));
+        addDto.setId(userLikedMusicPL);
         addDto.setMusicId(musicId);
         PlaylistEntity likedSongPL = this.playlistService.addMusic(addDto, userId, true);
         if (likedSongPL.getId() == 0) {
@@ -526,7 +536,6 @@ public class Manager implements Runnable {
             response.setError(Error.databaseError);
             return response;
         }
-
         response.setData(likedSongPL);
         response.successful();
         return response;
