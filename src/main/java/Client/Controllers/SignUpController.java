@@ -60,7 +60,6 @@ public class SignUpController implements Initializable {
         } catch (IOException var4) {
             var4.printStackTrace();
         }
-
     }
 
     public void setClient(ClientManager client) {
@@ -78,7 +77,6 @@ public class SignUpController implements Initializable {
         String username = this.usernameText.getText();
         String password = this.passwordText.getText();
         String email = this.emailText.getText();
-        String profilePath = this.selectedFile.getPath();
         if (!username.isEmpty() && username.length() <= 26 && username.length() >= 5) {
             if (password.isEmpty()) {
                 this.passwordError.setVisible(true);
@@ -137,7 +135,6 @@ public class SignUpController implements Initializable {
         } catch (IOException var4) {
             var4.printStackTrace();
         }
-
     }
 
     private boolean checkEmailValidity(String email) {
@@ -147,7 +144,7 @@ public class SignUpController implements Initializable {
 
     private FileDto uploadProfilePicture(int userId) {
         if (this.selectedFile.getName().equals("DefaultProfilePhoto.jpg")) {
-            this.selectedFile = this.client.copyFile(UploadType.userProfilePicture, this.selectedFile);
+            return null;
         }
 
         UploadDto uploadDto = new UploadDto();

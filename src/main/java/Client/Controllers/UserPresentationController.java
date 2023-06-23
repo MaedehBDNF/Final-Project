@@ -49,12 +49,19 @@ public class UserPresentationController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.username.setText(this.user.getUsername());
 
-        if (this.user.getProfilePicture() != null) {
+        if (this.user.getProfilePicture() != null && this.user.getProfilePicture().getId() != 0) {
             try {
                 Image image = new Image(new FileInputStream(this.client.download(this.user.getProfilePicture())));
                 this.userProfile.setFill(new ImagePattern(image));
             } catch (IOException var4) {
                 var4.printStackTrace();
+            }
+        } else {
+            try {
+                Image image = new Image(new FileInputStream(this.projectDirectory + "\\src\\main\\resources\\Images\\DefaultProfilePhoto.jpg"));
+                this.userProfile.setFill(new ImagePattern(image));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         if (this.pls != null && !this.pls.isEmpty()) {

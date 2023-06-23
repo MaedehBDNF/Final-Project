@@ -38,6 +38,7 @@ public class MainPageController implements Initializable {
     private LoadManager loader;
     private UserEntity user;
     private final ObjectMapper mapper = new ObjectMapper();
+    private final String projectDirectory = System.getProperty("user.dir");
     private File selectedFile;
     private Stage stage;
 
@@ -65,12 +66,19 @@ public class MainPageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.mapper.registerModule(new JavaTimeModule());
 
-        if (this.user.getProfilePicture() != null) {
+        if (this.user.getProfilePicture() != null && this.user.getProfilePicture().getId() != 0) {
             try {
                 Image image = new Image(new FileInputStream(this.client.download(this.user.getProfilePicture())));
                 this.profilePhoto.setFill(new ImagePattern(image));
             } catch (IOException var4) {
                 var4.printStackTrace();
+            }
+        } else {
+            try {
+                Image image = new Image(new FileInputStream(this.projectDirectory + "\\src\\main\\resources\\Images\\DefaultProfilePhoto.jpg"));
+                this.profilePhoto.setFill(new ImagePattern(image));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -223,16 +231,18 @@ public class MainPageController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPEG or PNG Files", new String[]{"*.jpg", "*.jpeg", "*.png"}));
         File newProfile = fileChooser.showOpenDialog((Window)null);
-        if (newProfile != null) {
-            this.selectedFile = this.client.copyFile(UploadType.userProfilePicture, newProfile);
+        if (newProfile == null) {
+            return;
         }
+        this.selectedFile = this.client.copyFile(UploadType.userProfilePicture, newProfile);
         try {
             Image image = new Image(new FileInputStream(this.selectedFile.getPath()));
             this.profilePhoto.setFill(new ImagePattern(image));
         } catch (IOException var4) {
             var4.printStackTrace();
         }
-        this.uploadProfilePicture(this.user.getId());
+        this.user.setProfilePicture(this.uploadProfilePicture(this.user.getId()));
+        this.client.setCurrentUser(this.user);
     }
 
     private FileDto uploadProfilePicture(int userId) {
