@@ -15,6 +15,7 @@ import Shared.Enums.Status;
 import Shared.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -108,6 +109,41 @@ public class MusicPresentationController implements Initializable {
         }
 
         if (this.playAtInit) this.playPause();
+
+        switch (this.playStatus) {
+            case repeatOne:
+                try {
+                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\repeat one.png"));
+                    this.playModeImage.setImage(image);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case consequence:
+                try {
+                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\consequence.png"));
+                    this.playModeImage.setImage(image);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case shuffle:
+                try {
+                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\shuffle.png"));
+                    this.playModeImage.setImage(image);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case finishAtEnd:
+                try {
+                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\finishAtEnd.png"));
+                    this.playModeImage.setImage(image);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
     }
 
     @FXML
@@ -348,11 +384,10 @@ public class MusicPresentationController implements Initializable {
                             playPause();
                             break;
                         case consequence:
-                            next();
-                            break;
                         case shuffle:
-                            Stage stage = (Stage) musicName.getScene().getWindow();
-                            loader.loadMusicPresentationPage(stage, calculateMusicTurnInShuffle(), tracks, true, playStatus);
+                            Platform.runLater(() -> {
+                                next();
+                            });;
                             break;
                     }
                 }
