@@ -168,47 +168,47 @@ public class Manager implements Runnable {
                 LoginDto loginDto = this.mapper.convertValue(request.getData(), LoginDto.class);
                 return this.login(loginDto);
             case findOneUser:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 FindOneUserDto findOneUserDto = this.mapper.convertValue(request.getData(), FindOneUserDto.class);
                 return this.userService.findOne(findOneUserDto.getUserId());
             case searchUser:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 SearchUserDto searchUserDto = this.mapper.convertValue(request.getData(), SearchUserDto.class);
                 return this.searchUser(searchUserDto.getUsername());
             case followUser:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 FollowUserDto followUserDto = this.mapper.convertValue(request.getData(), FollowUserDto.class);
                 return this.followUser(request.getUserId(), followUserDto);
             case findUserLikedAlbums:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 return this.findUserLikedAlbums(request.getUserId());
             case getUserFriends:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 FindUserFriendsDto findUserFriendsDto = this.mapper.convertValue(request.getData(), FindUserFriendsDto.class);
                 return this.userService.getUserFriends(findUserFriendsDto.getUserId());
             case followArtist:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 FollowArtistDto followArtistDto = this.mapper.convertValue(request.getData(), FollowArtistDto.class);
                 return this.followArtist(request.getUserId(), followArtistDto);
             case getUserFollowings:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 FindUserFollowingsDto findUserFollowingsDto = this.mapper.convertValue(request.getData(), FindUserFollowingsDto.class);
                 return this.userService.getUserFollowings(findUserFollowingsDto.getUserId());
             case doesUserFollowedArtist:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 DoesUserFollowedArtistDto doesUserFollowedArtistDto = this.mapper.convertValue(request.getData(), DoesUserFollowedArtistDto.class);
                 return this.userService.doesUserFollowedArtist(doesUserFollowedArtistDto);
             case doesUserFollowedUser:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 DoesUserFollowedUserDto doesUserFollowedUserDto = this.mapper.convertValue(request.getData(), DoesUserFollowedUserDto.class);
                 return this.userService.doesUserFollowedUser(doesUserFollowedUserDto);
             case logOut:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 return this.logout();
 
             // File Management
             case upload:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 UploadDto uploadDto = this.mapper.convertValue(request.getData(), UploadDto.class);
                 return this.uploadFile(uploadDto);
             case getFileInfo:
@@ -238,11 +238,11 @@ public class Manager implements Runnable {
                 SearchRequestDto searchAlbumDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
                 return this.searchAlbum(searchAlbumDto.getValue());
             case likeAlbum:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 LikeAlbumDto likeAlbumDto = this.mapper.convertValue(request.getData(), LikeAlbumDto.class);
                 return this.likeAlbum(likeAlbumDto);
             case doesUserLikedAlbum:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 DoesUserLikedAlbumDto doesUserLikedAlbumDto = this.mapper.convertValue(request.getData(), DoesUserLikedAlbumDto.class);
                 return this.albumService.doesUserLikedAlbum(doesUserLikedAlbumDto);
 
@@ -262,22 +262,22 @@ public class Manager implements Runnable {
                 FindOneMusicDto findOneMusicDto = this.mapper.convertValue(request.getData(), FindOneMusicDto.class);
                 return this.musicService.findOne(findOneMusicDto.getId());
             case likeMusic:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 LikeMusicDto likeMusicDto = this.mapper.convertValue(request.getData(), LikeMusicDto.class);
                 return this.likeMusic(request.getUserId(), likeMusicDto.getId());
             case dislikeMusic:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 DislikeMusicDto dislikeMusicDto = this.mapper.convertValue(request.getData(), DislikeMusicDto.class);
                 return this.dislikeMusic(request.getUserId(), dislikeMusicDto.getId());
             case addCommentOnMusic:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 CommentEntity comment = this.mapper.convertValue(request.getData(), CommentEntity.class);
                 return this.musicService.addComment(comment);
             case searchMusic:
                 SearchRequestDto searchMusicDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
                 return this.searchMusic(searchMusicDto.getValue());
             case doesUserLikedMusic:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 DoesUserLikedMusicDto doesUserLikedMusicDto = this.mapper.convertValue(request.getData(), DoesUserLikedMusicDto.class);
                 int userLikedMusicPL = this.playlistService.getLikedMusicsPlaylist(doesUserLikedMusicDto.getUserId());
                 return this.musicService.doesUserLikedMusic(userLikedMusicPL, doesUserLikedMusicDto.getMusicId());
@@ -289,45 +289,45 @@ public class Manager implements Runnable {
 
             // Playlist Manager
             case createPlaylist:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 CreatePlaylistDto createPlaylistDto = this.mapper.convertValue(request.getData(), CreatePlaylistDto.class);
                 return this.createPlaylist(createPlaylistDto);
             case findOnePlaylist:
                 FindOnePlaylistDto findOnePlaylistDto = this.mapper.convertValue(request.getData(), FindOnePlaylistDto.class);
                 return this.playlistService.findOne(currentUserId, findOnePlaylistDto.getId());
             case findAllUserPlaylists:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 FindUserPlaylistsDto findUserPlaylistsDto = this.mapper.convertValue(request.getData(), FindUserPlaylistsDto.class);
                 return this.findAllUserPlaylist(findUserPlaylistsDto.getUserId());
             case searchPlaylist:
                 SearchRequestDto searchPlaylistDto = this.mapper.convertValue(request.getData(), SearchRequestDto.class);
                 return this.searchPlaylist(searchPlaylistDto.getValue());
             case likePlayList:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 LikePlaylistDto likePlaylistDto = this.mapper.convertValue(request.getData(), LikePlaylistDto.class);
                 return this.likePlaylist(likePlaylistDto);
             case addPlaylist:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 AddPlaylistDto addPlaylistDto = this.mapper.convertValue(request.getData(), AddPlaylistDto.class);
                 return this.playlistService.addToUserPlaylists(addPlaylistDto);
             case addMusicToPlaylist:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 AddMusicToPlaylistDto addMusicToPlaylistDto = this.mapper.convertValue(request.getData(), AddMusicToPlaylistDto.class);
                 return this.addMusicToPlaylist(addMusicToPlaylistDto);
             case removeMusicFromPlaylist:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 RemoveMusicFromPlaylistDto removeMusicDto = this.mapper.convertValue(request.getData(), RemoveMusicFromPlaylistDto.class);
                 return this.removeMusicFromPlaylist(removeMusicDto);
             case changeMusicOrderInPlaylist:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 UpdateMusicTurnDto updateMusicTurnDto = this.mapper.convertValue(request.getData(), UpdateMusicTurnDto.class);
                 return this.changeMusicOrderInPlaylist(updateMusicTurnDto);
             case doesUserLikedPlaylist:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 DoesUserLikedPlaylistDto doesUserLikedPlaylistDto = this.mapper.convertValue(request.getData(), DoesUserLikedPlaylistDto.class);
                 return this.playlistService.doesUserLikedPlaylist(doesUserLikedPlaylistDto);
             case doesUserAddedPlaylist:
-                if (request.getUserId() != this.currentUserId) break;
+                if (this.currentUserId == -1 || request.getUserId() != this.currentUserId) break;
                 DoesUserAddedPlaylistDto doesUSerAddedPlaylistDto = this.mapper.convertValue(request.getData(), DoesUserAddedPlaylistDto.class);
                 return this.playlistService.doesUserAddedPlaylist(doesUSerAddedPlaylistDto);
 
