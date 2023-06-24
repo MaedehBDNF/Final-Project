@@ -10,10 +10,7 @@ import Shared.Dto.File.DownloadDto;
 import Shared.Dto.File.FileDto;
 import Shared.Dto.File.UploadDto;
 import Shared.Dto.Genre.FindOneGenreDto;
-import Shared.Dto.Music.DislikeMusicDto;
-import Shared.Dto.Music.DoesUserLikedMusicDto;
-import Shared.Dto.Music.FindOneMusicDto;
-import Shared.Dto.Music.LikeMusicDto;
+import Shared.Dto.Music.*;
 import Shared.Dto.Playlist.*;
 import Shared.Dto.Search.SearchRequestDto;
 import Shared.Dto.User.*;
@@ -170,7 +167,7 @@ public class ClientManager {
         downloadDto.setFileId(dto.getId());
         request.setData(downloadDto);
         sendReqToServer(request);
-        return this.receiveFile(dto);
+        return this.receiveFile(file);
     }
 
     public Response followUser(FollowUserDto dto) {
@@ -486,6 +483,34 @@ public class ClientManager {
         return this.getResFromServer();
     }
 
+    public Response removeMusicFromPlaylist(RemoveMusicFromPlaylistDto dto) {
+        Request request = new Request();
+        request.setUserId(this.currentUserId);
+        request.setTitle(Title.removeMusicFromPlaylist);
+        request.setData(dto);
+        this.sendReqToServer(request);
+        return this.getResFromServer();
+    }
+
+    public String downloadMusicCover(int musicId) {
+        DownloadMusicCoverDto dto = new DownloadMusicCoverDto();
+        dto.setMusicId(musicId);
+
+        // check if file exists, return path from local
+        String path = this.downloadDirectory + "musicCover" + dto.getMusicId() + ".jpg";
+        File file = new File(path);
+        if (file.exists()) {
+            return path;
+        }
+        // And if not exists, download it then return path
+        Request request = new Request();
+        request.setTitle(Title.downloadMusicCover);
+        request.setUserId(currentUserId);
+        request.setData(dto);
+        sendReqToServer(request);
+        return this.receiveFile(file);
+    }
+
     public Response changeMusicOrderInPlaylist(UpdateMusicTurnDto dto) {
         Request request = new Request();
         request.setUserId(this.currentUserId);
@@ -548,15 +573,10 @@ public class ClientManager {
         }
     }
 
-    private String receiveFile(FileDto fileDto) {
+    private String receiveFile(File file) {
         int bytes = 0;
         String filePath = "";
         try {
-            File file = File.createTempFile(
-                    fileDto.getName() + " - ",
-                    "." + fileDto.getMemeType(),
-                    new File(this.downloadDirectory)
-            );
             filePath = file.getPath();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
 
@@ -566,7 +586,7 @@ public class ClientManager {
                 fileOutputStream.write(buffer, 0, bytes);
                 size -= bytes;
             }
-            System.out.printf("%s file downloaded.%n", fileDto.getMemeType());
+            System.out.printf("%s file downloaded.%n", file.getName());
             fileOutputStream.close();
         } catch (IOException e){
             e.printStackTrace();

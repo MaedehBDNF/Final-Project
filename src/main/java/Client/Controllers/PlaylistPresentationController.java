@@ -5,15 +5,18 @@ import Client.ClientManager;
 import Client.LoadManager;
 import Shared.Dto.File.FileDto;
 import Shared.Dto.File.UploadDto;
+import Shared.Dto.Music.FindOneMusicDto;
 import Shared.Dto.Playlist.AddPlaylistDto;
 import Shared.Dto.Playlist.LikePlaylistDto;
 import Shared.Dto.Playlist.UpdateMusicTurnDto;
+import Shared.Entities.MusicEntity;
 import Shared.Entities.MusicPlaylistEntity;
 import Shared.Entities.PlaylistEntity;
 import Shared.Enums.Status;
 import Shared.Enums.UploadType;
 import Shared.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -59,10 +62,14 @@ public class PlaylistPresentationController implements Initializable {
     @FXML
     private TextArea description;
     @FXML
-    private Label playlistName, creator, popularity, swapError, likeError, addPlsError, swapLabel, withLabel;
+    private Label playlistName, creator, popularity, swapError, likeError, addPlsError, playError, swapLabel, withLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.mapper.registerModule(new JavaTimeModule());
+
+        this.description.setEditable(false);
+
         if (this.playlist.getCreator().getId() == this.client.getCurrentUserId()) {
             this.editCover.setVisible(true);
             this.swap.setVisible(true);
@@ -130,7 +137,11 @@ public class PlaylistPresentationController implements Initializable {
     @FXML
     private void play() {
         this.invisibleErrors();
-        // todo
+        if (!this.playlist.getTracks().isEmpty()) {
+            this.loader.loadMusicPresentationPage(0, (ArrayList<MusicEntity>) ((ArrayList<?>) this.playlist.getTracks()), true);
+        } else {
+            this.playError.setVisible(true);
+        }
     }
 
     @FXML
@@ -269,18 +280,19 @@ public class PlaylistPresentationController implements Initializable {
         this.musics.getChildren().clear();
         this.numOfMusic1.clear();
         this.numOfMusic2.clear();
+        int i = 0;
         for (MusicPlaylistEntity music : this.playlist.getTracks()) {
             String buttonText = String.format("%-10s %-60s %-15s %-20s", number + ")", music.getTitle(), music.getPopularity(), "Track");
             Button musicButton = new Button(buttonText);
-            musicButton.setUserData(music);
+            musicButton.setId(Integer.toString(i));
             musicButton.setPrefHeight(30);
             musicButton.setPrefWidth(1000);
             musicButton.setOnAction(event -> {
-                // todo 1. find one 2. load page
-                System.out.println(musicButton.getText());
+                this.loader.loadMusicPresentationPage(Integer.parseInt(musicButton.getId()), (ArrayList<MusicEntity>) ((ArrayList<?>) this.playlist.getTracks()), false);
             });
             this.musics.getChildren().add(musicButton);
             number++;
+            i++;
         }
     }
 }

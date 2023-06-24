@@ -2,6 +2,8 @@ package Client.Controllers;
 
 import Client.ClientManager;
 import Client.LoadManager;
+import Shared.Dto.Album.FindOneAlbumDto;
+import Shared.Dto.Music.FindOneMusicDto;
 import Shared.Dto.User.FollowArtistDto;
 import Shared.Entities.AlbumEntity;
 import Shared.Entities.ArtistEntity;
@@ -9,6 +11,7 @@ import Shared.Entities.MusicEntity;
 import Shared.Enums.Status;
 import Shared.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -23,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ArtistPresentationController implements Initializable {
@@ -45,6 +49,11 @@ public class ArtistPresentationController implements Initializable {
 
 
     public void initialize(URL location, ResourceBundle resources) {
+        this.mapper.registerModule(new JavaTimeModule());
+
+        this.biography.setEditable(false);
+        this.socialLinks.setEditable(false);
+
         this.artistName.setText(this.artist.getName());
         this.genre.setText(this.artist.getGenre().getName());
         this.biography.setText(this.artist.getBiography());
@@ -69,8 +78,10 @@ public class ArtistPresentationController implements Initializable {
                 musicButton.setPrefHeight(30);
                 musicButton.setPrefWidth(1000);
                 musicButton.setOnAction(event -> {
-                    // todo 1. find one 2. load page
-                    System.out.println(musicButton.getText());
+                    MusicEntity music = (MusicEntity) musicButton.getUserData();
+                    ArrayList<MusicEntity> list = new ArrayList<>();
+                    list.add(music);
+                    this.loader.loadMusicPresentationPage(0, list, false);
                 });
                 this.albumsAndTracks.getChildren().add(musicButton);
             }
@@ -85,8 +96,8 @@ public class ArtistPresentationController implements Initializable {
                 albumButton.setPrefHeight(30);
                 albumButton.setPrefWidth(1000);
                 albumButton.setOnAction(event -> {
-                    // todo 1. find one 2. load page
-                    System.out.println(albumButton.getText());
+                    AlbumEntity album = (AlbumEntity) albumButton.getUserData();
+                    this.loader.loadAlbumPresentationPage(this.fullInfoAlbum(album.getId()), this.findAlbumSongs(album.getId()));
                 });
                 this.albumsAndTracks.getChildren().add(albumButton);
             }
@@ -129,5 +140,20 @@ public class ArtistPresentationController implements Initializable {
     private boolean doesUserFollowedArtist() {
         Response response = this.client.doesUserFollowedArtist(this.artist.getId());
         return this.mapper.convertValue(response.getData(), boolean.class);
+    }
+
+    private ArrayList<MusicEntity> findAlbumSongs(int albumId) {
+        FindOneAlbumDto dto = new FindOneAlbumDto();
+        dto.setId(albumId);
+        Response response = this.client.findAlbumSongs(dto);
+        MusicEntity[] musicsArr = this.mapper.convertValue(response.getData(), MusicEntity[].class);
+        return new ArrayList<>(Arrays.asList(musicsArr));
+    }
+
+    private AlbumEntity fullInfoAlbum(int albumId) {
+        FindOneAlbumDto dto = new FindOneAlbumDto();
+        dto.setId(albumId);
+        Response response = this.client.findOneAlbum(dto);
+        return this.mapper.convertValue(response.getData(), AlbumEntity.class);
     }
 }

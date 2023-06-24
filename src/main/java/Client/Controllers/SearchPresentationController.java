@@ -54,8 +54,10 @@ public class SearchPresentationController implements Initializable {
                     musicButton.setPrefHeight(30);
                     musicButton.setPrefWidth(1000);
                     musicButton.setOnAction(event -> {
-                        // todo 1. find one 2. load page
-                        System.out.println(musicButton.getText());
+                        MusicEntity music = (MusicEntity) musicButton.getUserData();
+                        ArrayList<MusicEntity> list = new ArrayList<>();
+                        list.add(music);
+                        this.loader.loadMusicPresentationPage(0, list, false);
                     });
                     this.results.getChildren().add(musicButton);
                 }

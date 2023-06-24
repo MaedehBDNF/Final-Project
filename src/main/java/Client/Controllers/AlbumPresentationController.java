@@ -4,6 +4,7 @@ import Client.ClientManager;
 import Client.LoadManager;
 import Shared.Dto.Album.FindOneAlbumDto;
 import Shared.Dto.Album.LikeAlbumDto;
+import Shared.Dto.Music.FindOneMusicDto;
 import Shared.Entities.AlbumEntity;
 import Shared.Entities.MusicEntity;
 import Shared.Enums.Status;
@@ -43,7 +44,7 @@ public class AlbumPresentationController implements Initializable {
     @FXML
     private VBox musics;
     @FXML
-    private Label albumName, releaseDate, popularity, genre, artist, message;
+    private Label albumName, releaseDate, popularity, genre, artist, message, playMessage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,17 +66,18 @@ public class AlbumPresentationController implements Initializable {
             }
         }
         if (this.albumMusics != null) {
+            int i = 0;
             for (MusicEntity musicEntity : this.albumMusics) {
                 String buttonText = String.format("%-60s %-15s %-20s", musicEntity.getTitle(), musicEntity.getPopularity(), "Track");
-                javafx.scene.control.Button musicButton = new javafx.scene.control.Button(buttonText);
-                musicButton.setUserData(musicEntity);
+                Button musicButton = new Button(buttonText);
+                musicButton.setId(Integer.toString(i));
                 musicButton.setPrefHeight(30);
                 musicButton.setPrefWidth(1000);
                 musicButton.setOnAction(event -> {
-                    // todo 1. find one 2. load page
-                    System.out.println(musicButton.getText());
+                    this.loader.loadMusicPresentationPage(Integer.parseInt(musicButton.getId()), this.albumMusics, false);
                 });
                 this.musics.getChildren().add(musicButton);
+                i++;
             }
         }
         if (this.doesUserLikedAlbum()) {
@@ -108,7 +110,11 @@ public class AlbumPresentationController implements Initializable {
 
     @FXML
     private void play() {
-        // todo
+        if (!this.albumMusics.isEmpty()) {
+            this.loader.loadMusicPresentationPage(0, this.albumMusics, true);
+        } else {
+            this.playMessage.setVisible(true);
+        }
     }
 
     public void setClient(ClientManager client) {

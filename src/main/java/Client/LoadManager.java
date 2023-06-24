@@ -1,6 +1,7 @@
 package Client;
 
 import Client.Controllers.*;
+import Client.Enums.PlayStatus;
 import Shared.Dto.Search.SearchResponseDto;
 import Shared.Entities.*;
 import javafx.fxml.FXMLLoader;
@@ -217,8 +218,35 @@ public class LoadManager {
         this.basicLoad(loader);
     }
 
+    public void loadMusicPresentationPage(int musicIndex, ArrayList<MusicEntity> tracks, boolean playAtInit) {
+        MusicPresentationController controller = new MusicPresentationController();
+        controller.setClient(this.client);
+        controller.setMusicIndex(musicIndex);
+        controller.setTracks(tracks);
+        controller.setPlayAtInit(playAtInit);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("MusicPresentation.fxml"));
+        this.basicLoad(loader);
+    }
 
-    // todo: Complete
+    public void loadMusicPresentationPage(int musicIndex, ArrayList<MusicEntity> tracks, boolean playAtInit, PlayStatus playStatus) {
+        MusicPresentationController controller = new MusicPresentationController();
+        controller.setClient(this.client);
+        controller.setMusicIndex(musicIndex);
+        controller.setTracks(tracks);
+        controller.setPlayAtInit(playAtInit);
+        controller.setPlayStatus(playStatus);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(controller);
+        loader.setLocation(getClass().getClassLoader().getResource("MusicPresentation.fxml"));
+        this.basicLoad(loader);
+    }
+
+    public void loadMusicPresentationPage(Stage stage, int musicIndex, ArrayList<MusicEntity> tracks, boolean playAtInit, PlayStatus playStatus) {
+        stage.close();
+        this.loadMusicPresentationPage(musicIndex, tracks, playAtInit, playStatus);
+    }
 
     private void basicLoad(FXMLLoader loader) {
         try {

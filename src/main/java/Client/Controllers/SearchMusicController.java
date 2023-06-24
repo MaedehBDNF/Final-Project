@@ -2,7 +2,11 @@ package Client.Controllers;
 
 import Client.ClientManager;
 import Client.LoadManager;
+import Shared.Dto.Music.FindOneMusicDto;
 import Shared.Entities.MusicEntity;
+import Shared.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -17,6 +21,7 @@ import java.util.ResourceBundle;
 public class SearchMusicController implements Initializable {
     private ClientManager client;
     private LoadManager loader;
+    private final ObjectMapper mapper = new ObjectMapper();
     private ArrayList<MusicEntity> musics;
     private Stage stage;
     private String title;
@@ -30,6 +35,8 @@ public class SearchMusicController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.mapper.registerModule(new JavaTimeModule());
+
         this.pageTitle.setText(this.title);
 
         if (this.musics != null) {
@@ -40,7 +47,11 @@ public class SearchMusicController implements Initializable {
                 musicButton.setPrefHeight(30);
                 musicButton.setPrefWidth(1000);
                 musicButton.setOnAction(event -> {
-                    System.out.println(musicButton.getText());
+                    MusicEntity music = (MusicEntity) musicButton.getUserData();
+                    ArrayList<MusicEntity> list = new ArrayList<>();
+                    MusicEntity fullInfoMusic = this.fullInfoMusic(music.getId());
+                    list.add(fullInfoMusic);
+                    this.loader.loadMusicPresentationPage(0, list, false);
                 });
                 this.results.getChildren().add(musicButton);
             }
@@ -66,4 +77,10 @@ public class SearchMusicController implements Initializable {
         this.musics = musics;
     }
 
+    private MusicEntity fullInfoMusic(int musicId) {
+        FindOneMusicDto dto = new FindOneMusicDto();
+        dto.setId(musicId);
+        Response response = this.client.findOneMusic(dto);
+        return this.mapper.convertValue(response.getData(), MusicEntity.class);
+    }
 }
