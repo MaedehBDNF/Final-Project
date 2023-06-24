@@ -1,13 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="457.0" prefWidth="691.0" style="-fx-background-color: #20d762;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <ScrollPane layoutX="6.0" layoutY="252.0" prefHeight="200.0" prefWidth="678.0">
+            <content>
+                <VBox fx:id="musics" layoutX="-1.0" prefHeight="204.0" prefWidth="679.0" />
+            </content>
+        </ScrollPane>
+        <Label layoutX="14.0" layoutY="219.0" prefHeight="32.0" prefWidth="88.0" text="Musics">
+            <font>
+                <Font name="MS Reference Sans Serif" size="25.0" />
+            </font>
+        </Label>
+        <Circle fill="#083808" layoutX="106.0" layoutY="101.0" radius="92.0" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="playlistCover" fill="#f0f1f2" layoutX="106.0" layoutY="101.0" radius="84.0" stroke="BLACK" strokeType="INSIDE" />
+        <Label fx:id="creator" layoutX="216.0" layoutY="85.0" prefHeight="36.0" prefWidth="209.0" text="creator">
+            <font>
+                <Font size="25.0" />
+            </font></Label>
+        <Label fx:id="popularity" layoutX="317.0" layoutY="150.0" prefHeight="17.0" prefWidth="75.0">
+            <font>
+                <Font size="13.0" />
+            </font></Label>
+        <Button fx:id="like" layoutX="583.0" layoutY="202.0" mnemonicParsing="false" onAction="#like" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
+            <graphic>
+                <ImageView fx:id="likeImage" fitHeight="28.0" fitWidth="26.0" layoutX="14.0" layoutY="5.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@Images/like.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Label fx:id="playlistName" layoutX="216.0" layoutY="17.0" prefHeight="70.0" prefWidth="369.0" text="Playlist Name" textFill="#660c0c">
+            <font>
+                <Font size="35.0" />
+            </font>
+        </Label>
+        <Label layoutX="216.0" layoutY="143.0" prefHeight="32.0" prefWidth="88.0" text="Popularity">
+            <font>
+                <Font name="MS Reference Sans Serif" size="13.0" />
+            </font>
+        </Label>
+        <Button fx:id="play" layoutX="637.0" layoutY="201.0" mnemonicParsing="false" onAction="#play" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
+            <graphic>
+                <ImageView fitHeight="30.0" fitWidth="35.0" layoutX="14.0" layoutY="5.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@Images/play.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Label fx:id="likeError" alignment="CENTER" layoutX="584.0" layoutY="236.0" prefHeight="17.0" prefWidth="46.0" text="Sorry!" textFill="#e21414" visible="false">
+            <font>
+                <Font size="10.0" />
+            </font></Label>
+        <Button fx:id="addToPlaylists" layoutX="444.0" layoutY="202.0" mnemonicParsing="false" onAction="#addToPlaylists" prefHeight="36.0" prefWidth="133.0" style="-fx-background-color: #FFFFFF;" text="add to playlists">
+            <font>
+                <Font name="Comic Sans MS" size="12.0" />
+            </font>
+        </Button>
+        <TextArea fx:id="description" layoutX="444.0" layoutY="76.0" prefHeight="122.0" prefWidth="239.0" promptText="Description" />
+        <Button fx:id="editCover" layoutX="82.0" layoutY="175.0" mnemonicParsing="false" onAction="#editCover" prefHeight="17.0" prefWidth="35.0" style="-fx-background-color: #FFFFFF;" visible="false">
+            <graphic>
+                <ImageView fitHeight="28.0" fitWidth="26.0" layoutX="14.0" layoutY="5.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@Images/camera.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+        <TextField fx:id="numOfMusic1" layoutX="200.0" layoutY="218.0" prefHeight="25.0" prefWidth="42.0" visible="false" />
+        <TextField fx:id="numOfMusic2" layoutX="283.0" layoutY="218.0" prefHeight="25.0" prefWidth="42.0" visible="false" />
+        <Label fx:id="swapLabel" layoutX="162.0" layoutY="219.0" prefHeight="25.0" prefWidth="33.0" text="Swap" visible="false">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <Label fx:id="withLabel" layoutX="251.0" layoutY="219.0" prefHeight="25.0" prefWidth="26.0" text="with" visible="false" />
+        <Button fx:id="swap" layoutX="331.0" layoutY="218.0" mnemonicParsing="false" onAction="#swap" prefHeight="17.0" prefWidth="17.0" style="-fx-background-color: #FFFFFF;" visible="false">
+            <graphic>
+                <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="14.0" layoutY="5.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@Images/check.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Label fx:id="swapError" alignment="CENTER" layoutX="162.0" layoutY="193.0" prefHeight="15.0" prefWidth="201.0" textFill="RED" visible="false">
+            <font>
+                <Font size="10.0" />
+            </font>
+        </Label>
+        <Label fx:id="addPlsError" alignment="CENTER" layoutX="489.0" layoutY="236.0" prefHeight="17.0" prefWidth="46.0" text="Sorry!" textFill="#e21414" visible="false">
+            <font>
+                <Font size="10.0" />
+            </font>
+        </Label>
+    </children>
 </AnchorPane>
