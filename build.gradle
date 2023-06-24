@@ -31,6 +31,8 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.1'
 
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.15.1'
+
+    implementation group: 'com.mpatric', name: 'mp3agic', version: '0.9.1'
 }
 
 test {

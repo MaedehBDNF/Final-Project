@@ -6,6 +6,10 @@ import Shared.Entities.FileEntity;
 import Shared.Enums.Error;
 import Shared.Enums.Title;
 import Shared.Response;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
 
 import java.io.*;
 import java.net.Socket;
@@ -78,7 +82,31 @@ public class FileService {
 
     public void download(DownloadDto downloadDto) {
         FileEntity fileEntity = this.fileRepository.getFileInfo(downloadDto.getFileId());
-        this.sendFile(fileEntity.getPath());
+        this.sendFile(new File(fileEntity.getPath()));
+    }
+
+    public void downloadMusicCover(int fileId) {
+        FileEntity fileEntity = this.fileRepository.getFileInfo(fileId);
+        try {
+            Mp3File mp3file = new Mp3File(fileEntity.getPath());
+            if (mp3file.hasId3v2Tag()) {
+                ID3v2 id3v2Tag = mp3file.getId3v2Tag();
+                byte[] albumImageData = id3v2Tag.getAlbumImage();
+                if (albumImageData != null) {
+                    File file = File.createTempFile(
+                            "temp", ".jpg",
+                            new File(this.resourcesDirectory)
+                    );
+                    FileOutputStream temp = new FileOutputStream(file);
+                    temp.write(albumImageData);
+                    temp.close();
+                    this.sendFile(file);
+                    file.delete();
+                }
+            }
+        } catch (InvalidDataException | IOException | UnsupportedTagException e){
+            e.printStackTrace();
+        }
     }
 
     private String receiveFile(UploadDto uploadDto) {
@@ -107,10 +135,9 @@ public class FileService {
         return filePath;
     }
 
-    private void sendFile(String path){
+    private void sendFile(File file){
         int bytes = 0;
         try {
-            File file = new File(path);
             FileInputStream fileInputStream = new FileInputStream(file);
 
             this.dataOutputStream.writeLong(file.length());
