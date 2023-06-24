@@ -221,7 +221,7 @@ public class MusicRepository {
     }
 
     public boolean doesMusicBelongsToPL(int playlistId, int musicId) {
-        String query = "SELECT * FROM \"playlistTrack\" WHERE \"playlistId\" = ? AND \"musicID\" = ?;";
+        String query = "SELECT * FROM \"playlistTrack\" WHERE \"playlistId\" = ? AND \"musicId\" = ?;";
         try {
             PreparedStatement selectStatement = this.connection.prepareStatement(query);
             selectStatement.setInt(1, playlistId);
