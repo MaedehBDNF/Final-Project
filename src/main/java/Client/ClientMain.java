@@ -1,8 +1,6 @@
 package Client;
 
 import Client.Config.ClientConfigDto;
-import Server.Config.DatabaseConfigDto;
-import Server.Config.ServerConfigDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -17,8 +15,7 @@ public class ClientMain extends Application {
 
     public static void main(String[] args) throws IOException{
         readConfig();
-        final int PORT = config.getPort();
-        socket = new Socket("localhost", PORT);
+        socket = new Socket(config.getHost(), config.getPort());
 
         launch();
     }
