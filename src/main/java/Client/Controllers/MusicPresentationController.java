@@ -59,7 +59,7 @@ public class MusicPresentationController implements Initializable {
     @FXML
     private TextArea comments, lyrics;
     @FXML
-    private Button like, addToPlaylist, leaveComment, previous, next, playMode;
+    private Button likeMusic, addToPlaylist, leaveComment, previous, next, playMode;
     @FXML
     private VBox playlists;
     @FXML
