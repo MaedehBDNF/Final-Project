@@ -14,40 +14,23 @@
     <children>
         <ScrollPane layoutX="6.0" layoutY="252.0" prefHeight="200.0" prefWidth="678.0">
             <content>
-                <VBox fx:id="Music" layoutX="-1.0" prefHeight="204.0" prefWidth="679.0" />
+                <VBox fx:id="musics" layoutX="-1.0" prefHeight="204.0" prefWidth="679.0" />
             </content>
         </ScrollPane>
-        <Label layoutX="14.0" layoutY="219.0" prefHeight="32.0" prefWidth="254.0" text="Musics">
+        <Label layoutX="14.0" layoutY="219.0" prefHeight="32.0" prefWidth="88.0" text="Musics">
             <font>
                 <Font name="MS Reference Sans Serif" size="25.0" />
             </font>
         </Label>
         <Circle fill="#083808" layoutX="106.0" layoutY="109.0" radius="92.0" stroke="BLACK" strokeType="INSIDE" />
         <Circle fx:id="albumCover" fill="#f0f1f2" layoutX="106.0" layoutY="109.0" radius="84.0" stroke="BLACK" strokeType="INSIDE" />
-      <Label layoutX="227.0" layoutY="71.0" prefHeight="32.0" prefWidth="89.0" text="Artist">
-         <font>
-            <Font name="Garamond" size="31.0" />
-         </font>
-      </Label>
-      <Label layoutX="454.0" layoutY="66.0" prefHeight="46.0" prefWidth="110.0" text="Genre">
-         <font>
-            <Font name="Garamond" size="29.0" />
-         </font>
-      </Label>
-      <Label layoutX="450.0" layoutY="134.0" prefHeight="56.0" prefWidth="156.0" text="Release date">
-         <font>
-            <Font name="Garamond" size="26.0" />
-         </font>
-      </Label>
-      <Label layoutX="223.0" layoutY="127.0" prefHeight="70.0" prefWidth="149.0" text="Popularity">
-         <font>
-            <Font name="Garamond" size="25.0" />
-         </font>
-      </Label>
-      <Label fx:id="artist" layoutX="346.0" layoutY="81.0" />
-      <Label fx:id="genre" layoutX="593.0" layoutY="81.0" />
-      <Label fx:id="popularity" layoutX="346.0" layoutY="154.0" />
-      <Label fx:id="release" layoutX="593.0" layoutY="153.0" />
+        <Label fx:id="artist" layoutX="216.0" layoutY="85.0" prefHeight="36.0" prefWidth="369.0" text="artist">
+            <font>
+                <Font size="25.0" />
+            </font></Label>
+        <Label fx:id="genre" layoutX="332.0" layoutY="168.0" prefHeight="17.0" prefWidth="46.0" />
+        <Label fx:id="popularity" layoutX="332.0" layoutY="226.0" />
+        <Label fx:id="releaseDate" layoutX="332.0" layoutY="197.0" />
         <Button fx:id="like" layoutX="620.0" layoutY="22.0" mnemonicParsing="false" onAction="#like" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
             <graphic>
                 <ImageView fx:id="likeImage" fitHeight="28.0" fitWidth="26.0" layoutX="14.0" layoutY="5.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
@@ -57,5 +40,35 @@
                 </ImageView>
             </graphic>
         </Button>
+        <Label fx:id="albumName" layoutX="216.0" layoutY="17.0" prefHeight="70.0" prefWidth="369.0" text="Album Name" textFill="#660c0c">
+            <font>
+                <Font size="35.0" />
+            </font>
+        </Label>
+        <Label layoutX="216.0" layoutY="161.0" prefHeight="32.0" prefWidth="88.0" text="Genre">
+            <font>
+                <Font name="MS Reference Sans Serif" size="13.0" />
+            </font>
+        </Label>
+        <Label layoutX="216.0" layoutY="190.0" prefHeight="32.0" prefWidth="88.0" text="Release Date">
+            <font>
+                <Font name="MS Reference Sans Serif" size="13.0" />
+            </font>
+        </Label>
+        <Label layoutX="216.0" layoutY="219.0" prefHeight="32.0" prefWidth="88.0" text="Popularity">
+            <font>
+                <Font name="MS Reference Sans Serif" size="13.0" />
+            </font>
+        </Label>
+        <Button fx:id="play" layoutX="620.0" layoutY="207.0" mnemonicParsing="false" onAction="#play" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
+            <graphic>
+                <ImageView fitHeight="30.0" fitWidth="35.0" layoutX="14.0" layoutY="5.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@Images/play.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Label fx:id="message" alignment="CENTER" layoutX="620.0" layoutY="67.0" prefHeight="17.0" prefWidth="46.0" text="Sorry!" textFill="#e21414" visible="false" />
     </children>
 </AnchorPane>
