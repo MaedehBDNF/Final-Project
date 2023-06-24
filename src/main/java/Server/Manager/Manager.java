@@ -4,8 +4,7 @@ import Server.Album.AlbumService;
 import Server.Artist.ArtistService;
 import Server.Config.DatabaseConfigDto;
 import Shared.Dto.Album.DoesUserLikedAlbumDto;
-import Shared.Dto.Music.DislikeMusicDto;
-import Shared.Dto.Music.DoesUserLikedMusicDto;
+import Shared.Dto.Music.*;
 import Shared.Entities.*;
 import Server.FileManager.FileService;
 import Server.Genre.GenreService;
@@ -19,8 +18,6 @@ import Shared.Dto.Album.LikeAlbumDto;
 import Shared.Dto.Artist.FindOneArtistDto;
 import Shared.Dto.File.*;
 import Shared.Dto.Genre.FindOneGenreDto;
-import Shared.Dto.Music.FindOneMusicDto;
-import Shared.Dto.Music.LikeMusicDto;
 import Shared.Dto.Playlist.*;
 import Shared.Dto.Search.SearchRequestDto;
 import Shared.Dto.Search.SearchResponseDto;
@@ -32,9 +29,10 @@ import Shared.Request;
 import Shared.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.Mp3File;
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class Manager implements Runnable {
     private int currentUserId = -1;
@@ -283,6 +281,11 @@ public class Manager implements Runnable {
                 DoesUserLikedMusicDto doesUserLikedMusicDto = this.mapper.convertValue(request.getData(), DoesUserLikedMusicDto.class);
                 int userLikedMusicPL = this.playlistService.getLikedMusicsPlaylist(doesUserLikedMusicDto.getUserId());
                 return this.musicService.doesUserLikedMusic(userLikedMusicPL, doesUserLikedMusicDto.getMusicId());
+            case downloadMusicCover:
+                DownloadMusicCoverDto downloadMusicCoverDto = this.mapper.convertValue(request.getData(), DownloadMusicCoverDto.class);
+                this.downloadMusicCover(downloadMusicCoverDto.getMusicId());
+                this.needResponse = false;
+                break;
 
             // Playlist Manager
             case createPlaylist:
@@ -565,6 +568,11 @@ public class Manager implements Runnable {
 
     private Response likePlaylist(LikePlaylistDto likePlaylistDto) {
         return this.playlistService.likePlaylist(likePlaylistDto.getId(), this.currentUserId);
+    }
+
+    private void downloadMusicCover(int musicId) {
+        MusicEntity musicEntity = this.musicService.findOneEntity(musicId);
+        this.fileService.downloadMusicCover(musicEntity.getFile().getId());
     }
 
     private Response addMusicToPlaylist(AddMusicToPlaylistDto addMusicToPlaylistDto) {
