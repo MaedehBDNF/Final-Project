@@ -60,7 +60,7 @@
                 <Font name="MS Reference Sans Serif" size="13.0" />
             </font>
         </Label>
-        <Button fx:id="play" layoutX="620.0" layoutY="207.0" mnemonicParsing="false" onAction="#play" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
+        <Button fx:id="play" layoutX="620.0" layoutY="192.0" mnemonicParsing="false" onAction="#play" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="35.0" layoutX="14.0" layoutY="5.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -70,5 +70,10 @@
             </graphic>
         </Button>
         <Label fx:id="message" alignment="CENTER" layoutX="620.0" layoutY="67.0" prefHeight="17.0" prefWidth="46.0" text="Sorry!" textFill="#e21414" visible="false" />
+        <Label fx:id="playMessage" alignment="CENTER" layoutX="593.0" layoutY="234.0" prefHeight="17.0" prefWidth="97.0" text="There is no song!" textFill="#e21414" visible="false">
+            <font>
+                <Font size="11.0" />
+            </font>
+        </Label>
     </children>
 </AnchorPane>

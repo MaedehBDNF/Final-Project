@@ -34,7 +34,7 @@
             <font>
                 <Font size="13.0" />
             </font></Label>
-        <Button fx:id="like" layoutX="583.0" layoutY="202.0" mnemonicParsing="false" onAction="#like" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
+        <Button fx:id="like" layoutX="584.0" layoutY="202.0" mnemonicParsing="false" onAction="#like" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
             <graphic>
                 <ImageView fx:id="likeImage" fitHeight="28.0" fitWidth="26.0" layoutX="14.0" layoutY="5.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -53,7 +53,7 @@
                 <Font name="MS Reference Sans Serif" size="13.0" />
             </font>
         </Label>
-        <Button fx:id="play" layoutX="637.0" layoutY="201.0" mnemonicParsing="false" onAction="#play" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
+        <Button fx:id="play" layoutX="636.0" layoutY="201.0" mnemonicParsing="false" onAction="#play" prefHeight="36.0" prefWidth="45.0" style="-fx-background-color: #FFFFFF;">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="35.0" layoutX="14.0" layoutY="5.0" opacity="0.83" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -104,6 +104,11 @@
             </font>
         </Label>
         <Label fx:id="addPlsError" alignment="CENTER" layoutX="489.0" layoutY="236.0" prefHeight="17.0" prefWidth="46.0" text="Sorry!" textFill="#e21414" visible="false">
+            <font>
+                <Font size="10.0" />
+            </font>
+        </Label>
+        <Label fx:id="playError" alignment="CENTER" layoutX="609.0" layoutY="236.0" prefHeight="17.0" prefWidth="88.0" text="There is no song!" textFill="#e21414" visible="false">
             <font>
                 <Font size="10.0" />
             </font>
