@@ -258,7 +258,7 @@ public class InitializerService {
         musicDto.setArtistId(this.artists.get("Adele"));
         musicDto.setGenreId(this.genres.get("Pop"));
         musicDto.setAlbumId(this.albums.get("21"));
-        musicDto.setDuration(285);
+        musicDto.setDuration(287);
         musicDto.setReleaseDate(LocalDate.of(2011, 1, 24));
         musicDto.setLyric("I heard that you're settled down\n" +
                 "That you found a girl and you're married now\n" +
@@ -314,7 +314,7 @@ public class InitializerService {
         musicDto.setArtistId(this.artists.get("Adele"));
         musicDto.setGenreId(this.genres.get("Pop"));
         musicDto.setAlbumId(this.albums.get("21"));
-        musicDto.setDuration(239);
+        musicDto.setDuration(229);
         musicDto.setReleaseDate(LocalDate.of(2011, 1, 24));
         musicDto.setLyric("There's a fire starting in my heart\n" +
                 "Reaching a fever pitch, it's bringing me out the dark\n" +
@@ -392,7 +392,7 @@ public class InitializerService {
         musicDto.setArtistId(this.artists.get("Justin Bieber"));
         musicDto.setGenreId(this.genres.get("Pop"));
         musicDto.setAlbumId(this.albums.get("Justice"));
-        musicDto.setDuration(149);
+        musicDto.setDuration(157);
         musicDto.setReleaseDate(LocalDate.of(2021, 3, 19));
         musicDto.setLyric("Everybody knows my name now\n" +
                 "But somethin' 'bout it still feels strange\n" +
@@ -438,7 +438,7 @@ public class InitializerService {
         musicDto.setArtistId(this.artists.get("Eminem"));
         musicDto.setGenreId(this.genres.get("Hip hop"));
         musicDto.setAlbumId(this.albums.get("Recovery"));
-        musicDto.setDuration(214);
+        musicDto.setDuration(213);
         musicDto.setReleaseDate(LocalDate.of(2010, 6, 18));
         musicDto.setLyric("Yeah, ya know? Critics man\n" +
                 "Critics never got nothin' nice to say, man\n" +

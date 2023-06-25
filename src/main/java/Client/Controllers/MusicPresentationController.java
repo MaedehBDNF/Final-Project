@@ -56,7 +56,7 @@ public class MusicPresentationController implements Initializable {
     @FXML
     private Circle musicCover;
     @FXML
-    private Label musicName, artist, album, genre, popularity, releaseDate, duration, likeError, addToPlsMessage, addComError, playError;
+    private Label musicName, artist, album, genre, popularity, releaseDate, duration, likeError, addToPlsMessage, addComError, playError, musicTimer;
     @FXML
     private TextArea comments, lyrics;
     @FXML
@@ -78,9 +78,45 @@ public class MusicPresentationController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.mapper.registerModule(new JavaTimeModule());
 
+        this.musicTimer.setText("00:00");
+
+        switch (this.playStatus) {
+            case finishAtEnd:
+                try {
+                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\finishAtEnd.png"));
+                    this.playModeImage.setImage(image);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case repeatOne:
+                try {
+                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\repeat one.png"));
+                    this.playModeImage.setImage(image);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case consequence:
+                try {
+                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\consequence.png"));
+                    this.playModeImage.setImage(image);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case shuffle:
+                try {
+                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\shuffle.png"));
+                    this.playModeImage.setImage(image);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+
         this.comments.setEditable(false);
         this.lyrics.setEditable(false);
-
         this.music = this.fullInfoMusic(this.tracks.get(this.musicIndex).getId());
         this.musicName.setText(this.music.getTitle());
         this.artist.setText(this.music.getArtist().getName());
@@ -109,41 +145,6 @@ public class MusicPresentationController implements Initializable {
         }
 
         if (this.playAtInit) this.playPause();
-
-        switch (this.playStatus) {
-            case repeatOne:
-                try {
-                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\repeat one.png"));
-                    this.playModeImage.setImage(image);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case consequence:
-                try {
-                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\consequence.png"));
-                    this.playModeImage.setImage(image);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case shuffle:
-                try {
-                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\shuffle.png"));
-                    this.playModeImage.setImage(image);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case finishAtEnd:
-                try {
-                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\finishAtEnd.png"));
-                    this.playModeImage.setImage(image);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
     }
 
     @FXML
@@ -183,6 +184,7 @@ public class MusicPresentationController implements Initializable {
             this.addToPlsMessage.setVisible(true);
             return;
         } else {
+            this.playlists.getChildren().clear();
             for (PlaylistEntity playlistEntity : userPlaylists) {
                 Button playlistButton = new Button(playlistEntity.getTitle());
                 playlistButton.setUserData(playlistEntity);
@@ -220,6 +222,7 @@ public class MusicPresentationController implements Initializable {
     private void playPause() {
         this.invisibleMessages();
         if (this.running) {
+            // if music is running and we need pause it
             this.pauseTimer();
             this.mediaPlayer.pause();
             try {
@@ -229,6 +232,7 @@ public class MusicPresentationController implements Initializable {
                 e.printStackTrace();
             }
         } else {
+            // if music is not running and we need run it
             try {
                 Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\pause.png"));
                 this.playPauseImage.setImage(image);
@@ -236,16 +240,20 @@ public class MusicPresentationController implements Initializable {
                 e.printStackTrace();
             }
             if (this.mediaPlayer != null) {
-                mediaPlayer.setVolume(volume.getValue() * 0.01);
+                // if it is not in first time of loading and playing music
                 if (this.finished) {
+                    // if it was finished and need repeating
                     this.mediaPlayer = new MediaPlayer(this.media);
+                    mediaPlayer.setVolume(volume.getValue() * 0.01);
                     this.beginTimer();
                     this.mediaPlayer.play();
                 } else {
+                    // if it was paused and need continuing
                     this.continueTimer();
                     this.mediaPlayer.play();
                 }
             } else {
+                // if it is in first time of loading and playing music
                 // download file
                 FileDto fileDto = new FileDto();
                 fileDto.setName(this.music.getTitle());
@@ -253,6 +261,12 @@ public class MusicPresentationController implements Initializable {
                 fileDto.setMemeType(this.music.getFile().getMemeType());
                 String filePath = this.client.download(fileDto);
                 if (filePath == null) {
+                    try {
+                        Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\play.png"));
+                        this.playPauseImage.setImage(image);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     this.playError.setText("Please first logIn!");
                     this.playError.setVisible(true);
                     return;
@@ -377,9 +391,24 @@ public class MusicPresentationController implements Initializable {
                 double current = mediaPlayer.getCurrentTime().toSeconds();
                 double end = media.getDuration().toSeconds();
                 musicProgressBar.setProgress(current / end);
+                int minute = (int) (current / 60);
+                int second = ((int) current) - 60 * minute;
+                Platform.runLater(() -> {
+                    musicTimer.setText(String.format("%02d:%02d", minute, second));
+                });
                 if (current / end == 1) {
                     cancelTimer();
                     switch (playStatus) {
+                        case finishAtEnd:
+                            Platform.runLater(() -> {
+                                try {
+                                    Image image = new Image(new FileInputStream(System.getProperty("user.dir") + "\\src\\main\\resources\\Images\\play.png"));
+                                    playPauseImage.setImage(image);
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                            break;
                         case repeatOne:
                             playPause();
                             break;
@@ -387,7 +416,7 @@ public class MusicPresentationController implements Initializable {
                         case shuffle:
                             Platform.runLater(() -> {
                                 next();
-                            });;
+                            });
                             break;
                     }
                 }
